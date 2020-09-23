@@ -52,6 +52,8 @@ namespace lfe_navigation{
                     ROS_INFO("Goal 2 sent");
                 }
 
+                std::cout << "interrupt 1 " << std::endl;
+
                 while(ac_.getState() == actionlib::SimpleClientGoalState::PENDING){
                     if (paused_ == true){
                         ROS_INFO("jumped into paused_ true if after pending");
@@ -65,6 +67,8 @@ namespace lfe_navigation{
                         continue;
                     }
                 }
+
+                std::cout << "interrupt 2 " << std::endl;
 
                 if(sendingGoal_ == true){
                     while(ac_.getState() == actionlib::SimpleClientGoalState::ACTIVE){
@@ -83,6 +87,8 @@ namespace lfe_navigation{
                         }
                     }
                 }
+
+                std::cout << "interrupt 2 " << std::endl;
 
                 if(paused_ == false && sendingGoal_ == true){
                     if (ac_.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) {
@@ -193,10 +199,6 @@ namespace lfe_navigation{
         goal2_.target_pose.pose.position.y = y;
         goal2_.target_pose.pose.position.z = z;
         goal2_.target_pose.pose.orientation.z = orientation;
-    }
-
-    bool NavigationManager::getPaused(){
-        return paused_;
     }
 
 }

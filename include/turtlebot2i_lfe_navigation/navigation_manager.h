@@ -39,8 +39,6 @@ namespace lfe_navigation {
         void setGoal1(double x, double y, double z, double orientation);
         void setGoal2(double x, double y, double z, double orientation);
 
-        bool getPaused();
-
     private:
         int count_;
         bool paused_;

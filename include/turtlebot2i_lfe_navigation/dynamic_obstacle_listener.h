@@ -12,15 +12,13 @@
 #include <dynamic_reconfigure/server.h>
 #include <turtlebot2i_lfe_navigation/LfeNavReconfigureConfig.h>
 
-//tf
-#include <tf/transform_listener.h>
-
 //ros_astra_sdk_wrapper
 #include <ros_astra_sdk_wrapper/BodyTracking.h>
 
 //internal
 #include "./navigation_manager.h"
 #include "./lfe_nav_config.h"
+#include "./lfe_nav_logger.h"
 
 namespace lfe_navigation{
 
@@ -51,17 +49,22 @@ typedef dynamic_reconfigure::Server<Config> ReconfigureServer;
         //config
         bool backOff_;
 
+        //state variables
         bool body_received_;
         bool ready_to_continue_;
+        bool paused_;
         bool human_dist_decrease_;
 
-        tf::TransformListener listener_;
-        tf::StampedTransform tf_;
+        //logging
+        LfeNavLogger lfeNavLogger_;
 
         NavigationManager navigationManager_;
 
         double human_robot_distance_;
+        double current_robot_vel_;
         std::vector<double> human_dist_seq_;
+        std::vector<double> human_dist_time_seq_;
+        std::vector<double> robot_vel_seq_;
 
         //dynamic reconfigure
         LfeNavConfig cfg_;
@@ -73,12 +76,12 @@ typedef dynamic_reconfigure::Server<Config> ReconfigureServer;
         /**
           * @brief Listens to messages from /camera/body/skeleton, sets body_received_ to true
           */
-        void bodyLoop(ros::NodeHandle& sub);
+        void subscriberLoop(ros::NodeHandle& sub);
 
         /**
           * @brief Listens to messages from /tf
           */
-        void tfLoop();
+        void loop();
 
         /**
           * @todo callback to calculate distance
@@ -91,6 +94,7 @@ typedef dynamic_reconfigure::Server<Config> ReconfigureServer;
          */
         void newBodyMsgCallback(const ros_astra_sdk_wrapper::BodyTracking& bodyMsg);
 
+        void newVelocityCallback(geometry_msgs::Twist odom_msg);
         /**
           * @brief Callback for the dynamic configuration.
           *
@@ -98,6 +102,8 @@ typedef dynamic_reconfigure::Server<Config> ReconfigureServer;
           * @param config Reference to the dynamic reconfigure config
           */
         void configCb(turtlebot2i_lfe_navigation::LfeNavReconfigureConfig& config);
+
+        void executeMotionCue(std::string frame_id, double human_approach_vel, double robot_vel_avg);
 
     };
 

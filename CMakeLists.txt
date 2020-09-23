@@ -17,20 +17,55 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib
   move_base_msgs
   geometry_msgs
+  message_generation
   tf
   dynamic_reconfigure
 )
 
 find_package(Boost REQUIRED COMPONENTS system thread)
 
+################################################
+## Declare ROS messages, services and actions ##
+################################################
+
+add_message_files(
+        FILES
+        BOLogMsg.msg
+        STLogMsg.msg
+)
+
+generate_messages(
+        DEPENDENCIES
+        std_msgs
+        geometry_msgs
+)
+
+################################################
+## Declare ROS dynamic reconfigure parameters ##
+################################################
+
 #add dynamic reconfigure api
 generate_dynamic_reconfigure_options(
         cfg/LfeNavReconfigure.cfg
 )
 
+###################################
+## catkin specific configuration ##
+###################################
+
 catkin_package(
     INCLUDE_DIRS include
-    CATKIN_DEPENDS roscpp std_msgs ros_astra_sdk_wrapper move_base_msgs geometry_msgs actionlib cmake_modules tf dynamic_reconfigure
+    CATKIN_DEPENDS
+    roscpp
+    std_msgs
+    ros_astra_sdk_wrapper
+    move_base_msgs
+    geometry_msgs
+    message_generation
+    actionlib
+    cmake_modules
+    tf
+    dynamic_reconfigure
 )
 
 ###########
@@ -49,9 +84,9 @@ add_library(lfe_navigation
     src/nav_lfe.cpp
     src/navigation_manager.cpp
     src/lfe_nav_config.cpp
-)
+        src/lfe_nav_logger.cpp include/turtlebot2i_lfe_navigation/lfe_nav_logger.h)
 
-add_dependencies(lfe_navigation ${PROJECT_NAME}_gencfg)
+add_dependencies(lfe_navigation ${PROJECT_NAME}_gencfg ${PROJECT_NAME}_generate_messages_cpp)
 
 target_link_libraries(lfe_navigation
         ${catkin_LIBRARIES}
