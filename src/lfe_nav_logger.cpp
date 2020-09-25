@@ -16,7 +16,7 @@ namespace lfe_navigation{
     /// LOGGING ///
 
 
-    void LfeNavLogger::bo_log_init(double back1_velocity, double back1_duration, double forw_velocity, double forw_duration, double back2_velocity, double back2_duration, int wait_duration, double human_approach_vel, double robot_vel, std::string frame_id) {
+    void LfeNavLogger::bo_log_init(double back1_velocity, double back1_duration, double forw_velocity, double forw_duration, double back2_velocity, double back2_duration, int wait_duration, std::vector<double> human_dist_seq, std::vector<double> human_dist_time_seq, double human_approach_vel, double robot_vel, std::string frame_id) {
 
         std::string interimCounter = "bo_" + std::to_string(bo_id_counter_);
 
@@ -44,7 +44,21 @@ namespace lfe_navigation{
 
         bo_log_msg_.robot_lin_vel_x = robot_vel;
 
+        //human robot interaction
         bo_log_msg_.human_approach_vel = human_approach_vel;
+
+        std::cout << "reached tf" << std::endl;
+
+        int j = 0;
+
+        for(int i = (human_dist_seq.size()-1); i >= 0; --i){
+            if(j < human_dist_seq.size()) {
+                bo_log_msg_.human_approach_dist_seq[j] = (float) human_dist_seq.at(i);
+                bo_log_msg_.human_approach_dist_time_seq[j] = (float) human_dist_time_seq.at(i);
+            }
+            j++;
+        }
+
         bo_log_msg_.header.stamp = ros::Time::now();
         bo_log_msg_.header.frame_id = frame_id;
         total_duration_start_ = ros::Time::now();
@@ -74,13 +88,19 @@ namespace lfe_navigation{
         st_id_counter_++;
     }
 
-    void LfeNavLogger::finalize_log(bool back_off){
+    void LfeNavLogger::finalize_log(bool back_off, std::vector<double> human_mc_dist_seq, std::vector<double> human_mc_dist_time_seq){
         total_duration_end_ = ros::Time::now();
         if(back_off){
-            bo_log_msg_.total_duration = total_duration_end_.toSec() - total_duration_start_.toSec();
+            bo_log_msg_.time4interaction = total_duration_end_.toSec() - total_duration_start_.toSec();
+
+            for(int i = 0; i < human_mc_dist_seq.size(); i++){
+                bo_log_msg_.human_mc_dist_seq[i] = human_mc_dist_seq.at(i);
+                bo_log_msg_.human_mc_dist_time_seq[i] = human_mc_dist_time_seq.at(i);
+            }
+
             pub_bo_log_.publish(bo_log_msg_);
         }else{
-            st_log_msg_.total_duration = total_duration_end_.toSec() - total_duration_start_.toSec();
+            st_log_msg_.time4interaction = total_duration_end_.toSec() - total_duration_start_.toSec();
             pub_st_log_.publish(st_log_msg_);
         }
     }

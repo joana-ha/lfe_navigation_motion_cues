@@ -7,7 +7,6 @@ std_msgs/String id
 float64 back1_duration
 float64 forw_duration
 float64 back2_duration
-float64 total_duration
 float64 wait_seconds
 
 float64 back1_velocity
@@ -20,3 +19,8 @@ float64 robot_lin_vel_x
 
 # Human-robot-interaction metrics for the BackOff motion cue
 float64 human_approach_vel
+float64[20] human_approach_dist_seq
+float64[20] human_approach_dist_time_seq
+float64[100] human_mc_dist_seq
+float64[100] human_mc_dist_time_seq
+float64 time4interaction

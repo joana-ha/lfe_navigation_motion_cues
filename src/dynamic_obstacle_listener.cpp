@@ -6,7 +6,7 @@
 
 namespace lfe_navigation {
 
-    DynamicObstacleListener::DynamicObstacleListener(ros::NodeHandle &nh, ros::NodeHandle& pnh) : body_not_received_count_(0), paused_(false), lfeNavLogger_(nh), backOff_(true), config_init_(false), reconfigure_server_(NULL), navigationManager_(nh), human_dist_decrease_(false), ready_to_continue_(false), body_received_(false) {
+    DynamicObstacleListener::DynamicObstacleListener(ros::NodeHandle &nh, ros::NodeHandle& pnh) : dist_array_idx_count_(0), body_not_received_count_(0), paused_(false), lfeNavLogger_(nh), backOff_(true), config_init_(false), reconfigure_server_(NULL), navigationManager_(nh), human_dist_decrease_(false), ready_to_continue_(false), body_received_(false) {
 
         ros::NodeHandle nh_body(nh);
 
@@ -68,11 +68,12 @@ namespace lfe_navigation {
                     if(human_robot_distance_ >=2 && ready_to_continue_ == true && !paused_){
                         std::cout << "human continue goal" << std::endl;
                         ready_to_continue_ = false;
+                        dist_array_idx_count_ = 0;
                         human_dist_seq_.clear();
                         human_dist_time_seq_.clear();
                         robot_vel_seq_.clear();
                         human_dist_decrease_ = false;
-                        lfeNavLogger_.finalize_log(cfg_.hri.backOff);
+                        lfeNavLogger_.finalize_log(cfg_.hri.backOff, human_mc_dist_seq_, human_mc_dist_time_seq_);
                         human_mc_dist_seq_.clear();
                         human_mc_dist_time_seq_.clear();
                         navigationManager_.continueGoal(cfg_.hri.wait_duration);
@@ -82,14 +83,9 @@ namespace lfe_navigation {
                     }
 
                     body_not_received_count_++;
-                    //TODO depth stream mitberücksichtigen für TfI
-                    if(body_not_received_count_%100000 == 0 ){
-                        std::cout << "body received count" << body_not_received_count_ << std::endl;
-                    }
 
                     if (body_not_received_count_ > 1600000){
                         body_received_ = false;
-                        std::cout << "body received is false" << std::endl;
                         body_not_received_count_ = 0;
                     }
 
@@ -100,11 +96,12 @@ namespace lfe_navigation {
                 if(body_received_ == false && ready_to_continue_ == true && !paused_){
                     std::cout << "no huamn continue goal" << std::endl;
                     ready_to_continue_ = false;
+                    dist_array_idx_count_ = 0;
                     human_dist_seq_.clear();
                     human_dist_time_seq_.clear();
                     robot_vel_seq_.clear();
                     human_dist_decrease_ = false;
-                    lfeNavLogger_.finalize_log(cfg_.hri.backOff);
+                    lfeNavLogger_.finalize_log(cfg_.hri.backOff, human_mc_dist_seq_, human_mc_dist_time_seq_);
                     human_mc_dist_seq_.clear();
                     human_mc_dist_time_seq_.clear();
                     navigationManager_.continueGoal(cfg_.hri.wait_duration);
@@ -148,11 +145,17 @@ namespace lfe_navigation {
                 human_robot_distance_ = (int)(human_robot_distance_*100+0.5)/100.0; //round to two decimal places
 
                 std::cout << "distance: " << human_robot_distance_ << std::endl;
-                //std::cout << "current rob vel: " << current_robot_vel_ << std::endl;
 
                 if (paused_ == true || ready_to_continue_ == true){
-                    human_mc_dist_seq_.push_back(human_robot_distance_);
-                    human_mc_dist_time_seq_.push_back(time_stamp);
+                    if(dist_array_idx_count_ <= 500){
+                        human_mc_dist_seq_.push_back(human_robot_distance_);
+                        time_stamp = time_stamp_sec + (time_stamp_nsec/1000000000.0);
+                        human_mc_dist_time_seq_.push_back(time_stamp);
+                        dist_array_idx_count_++;
+                    }else{
+                        body_received_ = false;
+                    }
+
                 }else{
                     if(human_dist_seq_.size() == 14){
                         human_dist_seq_.pop_back();
@@ -218,15 +221,21 @@ namespace lfe_navigation {
     }
 
     void DynamicObstacleListener::newDepthCallback(const sensor_msgs::ImageConstPtr& depth_msg, const sensor_msgs::CameraInfoConstPtr& info_msg){
-        //TODO wenn Mensch in interaction space, dann tracke distance zu einem radius der pixel koordinaten, speichere in vektor, ab distanz von kleiner als übrnimmt depth stream die tiefenmessung dann pixel nachverfolgen
         const std::vector<unsigned char> data = depth_msg->data;
         std::vector<int> image_patch;
         int median_idx;
         int median;
 
+        double time_stamp_nsec;
+        double time_stamp_sec;
+        double time_stamp;
+
         unsigned char tmp_char1;
         unsigned char tmp_char2;
         unsigned int tmp_int;
+
+        time_stamp_nsec = depth_msg->header.stamp.nsec;
+        time_stamp_sec = depth_msg->header.stamp.sec;
 
         if(paused_ == true || ready_to_continue_ == true){
 
@@ -253,8 +262,22 @@ namespace lfe_navigation {
             median = image_patch.at(median_idx);
             std::cout << "depth median: " << median << std::endl;
 
-            if(median < 1000 && median != 0){
-                body_not_received_count_ = 0;
+            //use depth stream median instead of body tracking msg, if distance < 1 meter, is more accurate
+            if(median < 1000){
+                if(dist_array_idx_count_ <= 100){
+                    human_mc_dist_seq_.push_back(median/1000);
+                    time_stamp = time_stamp_sec + (time_stamp_nsec/1000000000.0);
+                    human_mc_dist_time_seq_.push_back(time_stamp);
+                    dist_array_idx_count_++;
+                }else{
+                    body_received_ = false;
+                }
+
+
+
+                if (median != 0){
+                    body_not_received_count_ = 0;
+                }
             }
         }
 
@@ -269,7 +292,7 @@ namespace lfe_navigation {
         if(backOff_){
             //TODO vector dist time seq logging
             //TODO vector dist seq logging
-            lfeNavLogger_.bo_log_init(cfg_.backOff.back1_velocity, cfg_.backOff.back1_duration, cfg_.backOff.forw_velocity, cfg_.backOff.forw_duration, cfg_.backOff.back2_velocity, cfg_.backOff.back2_duration, cfg_.hri.wait_duration, human_approach_vel, robot_vel_avg, frame_id);
+            lfeNavLogger_.bo_log_init(cfg_.backOff.back1_velocity, cfg_.backOff.back1_duration, cfg_.backOff.forw_velocity, cfg_.backOff.forw_duration, cfg_.backOff.back2_velocity, cfg_.backOff.back2_duration, cfg_.hri.wait_duration, human_dist_seq_, human_dist_time_seq_, human_approach_vel, robot_vel_avg, frame_id);
             navigationManager_.backOff(cfg_.backOff.back1_velocity, cfg_.backOff.back1_duration, cfg_.backOff.forw_velocity, cfg_.backOff.forw_duration, cfg_.backOff.back2_velocity, cfg_.backOff.back2_duration);
         }else{
 
