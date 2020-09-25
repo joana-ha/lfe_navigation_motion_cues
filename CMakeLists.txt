@@ -20,6 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   tf
   dynamic_reconfigure
+  image_transport
 )
 
 find_package(Boost REQUIRED COMPONENTS system thread)
@@ -66,6 +67,7 @@ catkin_package(
     cmake_modules
     tf
     dynamic_reconfigure
+    image_transport
 )
 
 ###########

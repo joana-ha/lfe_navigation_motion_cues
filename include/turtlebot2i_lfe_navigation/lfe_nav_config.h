@@ -56,13 +56,13 @@ namespace lfe_navigation {
         LfeNavConfig() {
 
             //navigation
-            navigation.goal1_pos_x = 0.5; //kraftraum: -1.22 //allraumtest: 0.33  //rtabmaphome: 2.0
-            navigation.goal1_pos_y = -2.3; //kraftraum:-1.79 //allraumtest: -1.75 //rthabmaphome: -3.3
+            navigation.goal1_pos_x = 0.5; //kraftraum: 0.5 //allraumtest: 0.33  //rtabmaphome: 2.0 //lfe: -17.3
+            navigation.goal1_pos_y = -2.3; //kraftraum:-2.3 //allraumtest: -1.75 //rthabmaphome: -3.3 //lfe: -26.2
             navigation.goal1_pos_z = 0.0;
             navigation.goal1_orientation = 0.0;
 
-            navigation.goal2_pos_x = 1.56; //kraftraum:2.0 //allraumtest: -2.4 //rtabmaphome: 0.4
-            navigation.goal2_pos_y = 2.6; //kraftraum:3.19 //allraumtest: -3.77 //rtabmaphome: -0.95
+            navigation.goal2_pos_x = 1.56; //kraftraum:1.56 //allraumtest: -2.4 //rtabmaphome: 0.4 //lfe: 1.13
+            navigation.goal2_pos_y = 2.6; //kraftraum:2.6 //allraumtest: -3.77 //rtabmaphome: -0.95 //lfe: -0.59
             navigation.goal2_pos_z = 0.0;
             navigation.goal2_orientation = 0.0;
 
