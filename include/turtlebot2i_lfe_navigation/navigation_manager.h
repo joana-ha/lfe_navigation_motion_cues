@@ -33,11 +33,12 @@ namespace lfe_navigation {
 
         void sendGoal();
         void stopGoal();
-        void backOff(double back1_velocity, double back1_seconds, double forw_velocity, double forw_seconds, double back2_velocity, double back2_seconds);
+        void backOff(double back_velocity, double back_seconds);
         void continueGoal(int seconds);
 
         void setGoal1(double x, double y, double z, double orientation);
         void setGoal2(double x, double y, double z, double orientation);
+        void setGoal3(double x, double y, double z, double orientation);
 
     private:
         int count_;
@@ -49,6 +50,7 @@ namespace lfe_navigation {
 
         move_base_msgs::MoveBaseGoal goal1_;
         move_base_msgs::MoveBaseGoal goal2_;
+        move_base_msgs::MoveBaseGoal goal3_;
 
     };
 }

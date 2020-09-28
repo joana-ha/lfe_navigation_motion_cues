@@ -6,7 +6,7 @@
 
 namespace lfe_navigation {
 
-    DynamicObstacleListener::DynamicObstacleListener(ros::NodeHandle &nh, ros::NodeHandle& pnh) : dist_array_idx_count_(0), body_not_received_count_(0), paused_(false), lfeNavLogger_(nh), backOff_(true), config_init_(false), reconfigure_server_(NULL), navigationManager_(nh), human_dist_decrease_(false), ready_to_continue_(false), body_received_(false) {
+    DynamicObstacleListener::DynamicObstacleListener(ros::NodeHandle &nh, ros::NodeHandle& pnh) : body_not_received_count_(0), paused_(false), lfeNavLogger_(nh), backOff_(true), config_init_(false), reconfigure_server_(NULL), navigationManager_(nh), human_dist_decrease_(false), ready_to_continue_(false), body_received_(false) {
 
         ros::NodeHandle nh_body(nh);
 
@@ -46,6 +46,7 @@ namespace lfe_navigation {
         cfg_.reconfigure(config);
         navigationManager_.setGoal1(cfg_.navigation.goal1_pos_x, cfg_.navigation.goal1_pos_y, cfg_.navigation.goal1_pos_z, cfg_.navigation.goal1_orientation);
         navigationManager_.setGoal2(cfg_.navigation.goal2_pos_x, cfg_.navigation.goal2_pos_y, cfg_.navigation.goal2_pos_z, cfg_.navigation.goal2_orientation);
+        navigationManager_.setGoal3(cfg_.navigation.goal3_pos_x, cfg_.navigation.goal3_pos_y, cfg_.navigation.goal3_pos_z, cfg_.navigation.goal3_orientation);
         setMotionCue(cfg_.hri.backOff);
         config_init_ = true;
     }
@@ -60,6 +61,8 @@ namespace lfe_navigation {
 
     void DynamicObstacleListener::loop() {
 
+        bool human_continue_goal;
+
         ros::Rate rate(10.0);
 
         while (ros::ok()) {
@@ -68,12 +71,12 @@ namespace lfe_navigation {
                     if(human_robot_distance_ >=2 && ready_to_continue_ == true && !paused_){
                         std::cout << "human continue goal" << std::endl;
                         ready_to_continue_ = false;
-                        dist_array_idx_count_ = 0;
                         human_dist_seq_.clear();
                         human_dist_time_seq_.clear();
                         robot_vel_seq_.clear();
                         human_dist_decrease_ = false;
-                        lfeNavLogger_.finalize_log(cfg_.hri.backOff, human_mc_dist_seq_, human_mc_dist_time_seq_);
+                        human_continue_goal = true;
+                        lfeNavLogger_.finalize_log(cfg_.hri.backOff, human_mc_dist_seq_, human_mc_dist_time_seq_, human_continue_goal);
                         human_mc_dist_seq_.clear();
                         human_mc_dist_time_seq_.clear();
                         navigationManager_.continueGoal(cfg_.hri.wait_duration);
@@ -96,12 +99,13 @@ namespace lfe_navigation {
                 if(body_received_ == false && ready_to_continue_ == true && !paused_){
                     std::cout << "no huamn continue goal" << std::endl;
                     ready_to_continue_ = false;
-                    dist_array_idx_count_ = 0;
                     human_dist_seq_.clear();
                     human_dist_time_seq_.clear();
                     robot_vel_seq_.clear();
                     human_dist_decrease_ = false;
-                    lfeNavLogger_.finalize_log(cfg_.hri.backOff, human_mc_dist_seq_, human_mc_dist_time_seq_);
+                    human_continue_goal = false;
+                    std::cout << "step1" << std::endl;
+                    lfeNavLogger_.finalize_log(cfg_.hri.backOff, human_mc_dist_seq_, human_mc_dist_time_seq_, human_continue_goal);
                     human_mc_dist_seq_.clear();
                     human_mc_dist_time_seq_.clear();
                     navigationManager_.continueGoal(cfg_.hri.wait_duration);
@@ -147,15 +151,9 @@ namespace lfe_navigation {
                 std::cout << "distance: " << human_robot_distance_ << std::endl;
 
                 if (paused_ == true || ready_to_continue_ == true){
-                    if(dist_array_idx_count_ <= 500){
-                        human_mc_dist_seq_.push_back(human_robot_distance_);
-                        time_stamp = time_stamp_sec + (time_stamp_nsec/1000000000.0);
-                        human_mc_dist_time_seq_.push_back(time_stamp);
-                        dist_array_idx_count_++;
-                    }else{
-                        body_received_ = false;
-                    }
-
+                    human_mc_dist_seq_.push_back(human_robot_distance_);
+                    time_stamp = time_stamp_sec + (time_stamp_nsec/1000000000.0);
+                    human_mc_dist_time_seq_.push_back(time_stamp);
                 }else{
                     if(human_dist_seq_.size() == 14){
                         human_dist_seq_.pop_back();
@@ -199,8 +197,6 @@ namespace lfe_navigation {
                     //optionally, robot velocity can be subtracted from human approach vel
                     human_approach_vel = human_approach_vel;//-robot_vel_avg;
 
-                    //std::cout << "approach vel: " << human_approach_vel << std::endl;
-
                     if (decrease > 12){
                         human_dist_decrease_ = true;
                     }else{
@@ -225,6 +221,7 @@ namespace lfe_navigation {
         std::vector<int> image_patch;
         int median_idx;
         int median;
+        bool valid_pixel;
 
         double time_stamp_nsec;
         double time_stamp_sec;
@@ -239,47 +236,51 @@ namespace lfe_navigation {
 
         if(paused_ == true || ready_to_continue_ == true){
 
+            if ((((pxl_lknee_x_)+(pxl_lknee_y_)*depth_msg->width)*2) < data.size()){
+                valid_pixel = true;
+            }else{
+                valid_pixel = false;
+            }
+
             image_patch.clear();
 
-            //get a patch of 48x64 pixels around the knee pixel
-            for(int i=-24; i < 24; i++){
-                for(int j=-32; j < 32; j++){
-                    if((((pxl_lknee_x_+j)+(pxl_lknee_y_+i)*depth_msg->width)*2) < data.size() && ((((pxl_lknee_x_+j)+(pxl_lknee_y_+i)*depth_msg->width)*2)+1) < data.size() ) {
-                        tmp_char1 = data[((pxl_lknee_x_ + j) + (pxl_lknee_y_ + i) * depth_msg->width) * 2];
-                        tmp_char2 = data[(((pxl_lknee_x_ + j) + (pxl_lknee_y_ + i) * depth_msg->width) * 2) + 1];
-                        tmp_int = ((unsigned int) ((((unsigned int)tmp_char2) << 8) & 0xFF00)) + (unsigned int) (((unsigned int) tmp_char1) & 0x00FF);
-                        image_patch.push_back(tmp_int);
-                    }else{
-                        //TODO write exception
-                        std::cout << "index out of bounds error" << std::endl;
+            if(valid_pixel){
+                //get a patch of 48x64 pixels around the knee pixel
+                for(int i=-24; i < 24; i++){
+                    for(int j=-32; j < 32; j++){
+                        if((((pxl_lknee_x_+j)+(pxl_lknee_y_+i)*depth_msg->width)*2) < data.size() && ((((pxl_lknee_x_+j)+(pxl_lknee_y_+i)*depth_msg->width)*2)+1) < data.size() ) {
+                            tmp_char1 = data[((pxl_lknee_x_ + j) + (pxl_lknee_y_ + i) * depth_msg->width) * 2];
+                            tmp_char2 = data[(((pxl_lknee_x_ + j) + (pxl_lknee_y_ + i) * depth_msg->width) * 2) + 1];
+                            tmp_int = ((unsigned int) ((((unsigned int)tmp_char2) << 8) & 0xFF00)) + (unsigned int) (((unsigned int) tmp_char1) & 0x00FF);
+                            image_patch.push_back(tmp_int);
+                        }else{
+                            //TODO write exception
+                            std::cout << "index out of bounds error" << std::endl;
+                        }
+                    }
+                }
+
+
+                //take median of that patch as distance to be resilient to outliers
+                std::sort(image_patch.begin(), image_patch.end());
+                median_idx = ((image_patch.size()+(image_patch.size()+1))/2)-1;
+                median = image_patch.at(median_idx);
+                std::cout << "depth median: " << median << std::endl;
+
+                //use depth stream median instead of body tracking msg, if distance < 1 meter, is more accurate
+                if(median < 1000){
+                    human_mc_dist_seq_.push_back((double)median/1000);
+                    time_stamp = time_stamp_sec + (time_stamp_nsec/1000000000.0);
+                    human_mc_dist_time_seq_.push_back(time_stamp);
+
+                    if (median != 0){
+                        body_not_received_count_ = 0;
                     }
                 }
             }
-
-            //take median of that patch as distance to be resilient to outliers
-            std::sort(image_patch.begin(), image_patch.end());
-            median_idx = ((image_patch.size()+(image_patch.size()+1))/2)-1;
-            median = image_patch.at(median_idx);
-            std::cout << "depth median: " << median << std::endl;
-
-            //use depth stream median instead of body tracking msg, if distance < 1 meter, is more accurate
-            if(median < 1000){
-                if(dist_array_idx_count_ <= 100){
-                    human_mc_dist_seq_.push_back(median/1000);
-                    time_stamp = time_stamp_sec + (time_stamp_nsec/1000000000.0);
-                    human_mc_dist_time_seq_.push_back(time_stamp);
-                    dist_array_idx_count_++;
-                }else{
-                    body_received_ = false;
-                }
-
-
-
-                if (median != 0){
-                    body_not_received_count_ = 0;
-                }
-            }
         }
+
+        //wenn ein großteil der pixel ganz plötzlich näher dran sind als der rest
 
         //TODO nach plötzlicher Intensitätsveränderung schauen
     }
@@ -290,12 +291,10 @@ namespace lfe_navigation {
         ROS_INFO("goal stop is sent");
 
         if(backOff_){
-            //TODO vector dist time seq logging
-            //TODO vector dist seq logging
-            lfeNavLogger_.bo_log_init(cfg_.backOff.back1_velocity, cfg_.backOff.back1_duration, cfg_.backOff.forw_velocity, cfg_.backOff.forw_duration, cfg_.backOff.back2_velocity, cfg_.backOff.back2_duration, cfg_.hri.wait_duration, human_dist_seq_, human_dist_time_seq_, human_approach_vel, robot_vel_avg, frame_id);
-            navigationManager_.backOff(cfg_.backOff.back1_velocity, cfg_.backOff.back1_duration, cfg_.backOff.forw_velocity, cfg_.backOff.forw_duration, cfg_.backOff.back2_velocity, cfg_.backOff.back2_duration);
+            lfeNavLogger_.bo_log_init(cfg_.backOff.back_velocity, cfg_.backOff.back_duration, cfg_.hri.wait_duration, human_dist_seq_, human_dist_time_seq_, human_approach_vel, robot_vel_avg, frame_id);
+            navigationManager_.backOff(cfg_.backOff.back_velocity, cfg_.backOff.back_duration);
         }else{
-
+            lfeNavLogger_.st_log_init(cfg_.hri.wait_duration, human_dist_seq_, human_dist_time_seq_, human_approach_vel, robot_vel_avg, frame_id);
             navigationManager_.stopGoal();
         }
 

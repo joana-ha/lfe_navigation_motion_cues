@@ -30,6 +30,10 @@ namespace lfe_navigation {
             double goal2_pos_y; //!< y coordinate of goal2 position
             double goal2_pos_z; //!< z coordinate of goal2 position
             double goal2_orientation; //!< goal2 orientation as radian for z axis
+            double goal3_pos_x; //!< x coordinate of goal3 position
+            double goal3_pos_y; //!< y coordinate of goal3 position
+            double goal3_pos_z; //!< z coordinate of goal3 position
+            double goal3_orientation; //!< goal3 orientation as radian for z axis
         } navigation; //!< Navigation related parameters
 
         struct HumanRobotInteraction {
@@ -40,12 +44,8 @@ namespace lfe_navigation {
         } hri; //!< HRI related parameters
 
         struct BackOff {
-            double back1_velocity; //!< Velocity of first backwards movement in m/s. Can be between -0.7 and 0. Value should be negative.
-            double forw_velocity; //!< Velocity of the forward movement in m/s. Can be between 0 and 0.7.
-            double back2_velocity; //!< Velocity of the second backwards movement in m/s. Can be between -0.7 and 0. Value should be negative.
-            double back1_duration; //!< Duration of first backwards movement in seconds.
-            double forw_duration; //!< Duration of the forward movement in seconds.
-            double back2_duration; //!< Duration of the second backwards movement in seconds.
+            double back_velocity; //!< Velocity of first backwards movement in m/s. Can be between -0.7 and 0. Value should be negative.
+            double back_duration; //!< Duration of first backwards movement in seconds.
         } backOff; //!< BackOff related parameters
 
         /**
@@ -56,29 +56,30 @@ namespace lfe_navigation {
         LfeNavConfig() {
 
             //navigation
-            navigation.goal1_pos_x = 0.5; //kraftraum: 0.5 //allraumtest: 0.33  //rtabmaphome: 2.0 //lfe: -17.3
-            navigation.goal1_pos_y = -2.3; //kraftraum:-2.3 //allraumtest: -1.75 //rthabmaphome: -3.3 //lfe: -26.2
+            navigation.goal1_pos_x = -0.07; //kraftraum: 0.5 //allraumtest: 0.33  //rtabmaphome: 2.0 //lfe: -17.3
+            navigation.goal1_pos_y = -3.08; //kraftraum:-2.3 //allraumtest: -1.75 //rthabmaphome: -3.3 //lfe: -26.2
             navigation.goal1_pos_z = 0.0;
             navigation.goal1_orientation = 0.0;
 
-            navigation.goal2_pos_x = 1.56; //kraftraum:1.56 //allraumtest: -2.4 //rtabmaphome: 0.4 //lfe: 1.13
-            navigation.goal2_pos_y = 2.6; //kraftraum:2.6 //allraumtest: -3.77 //rtabmaphome: -0.95 //lfe: -0.59
+            navigation.goal2_pos_x = -18.1; //kraftraum:1.56 //allraumtest: -2.4 //rtabmaphome: 0.4 //lfe: 1.13
+            navigation.goal2_pos_y = -26.7; //kraftraum:2.6 //allraumtest: -3.77 //rtabmaphome: -0.95 //lfe: -0.59
             navigation.goal2_pos_z = 0.0;
             navigation.goal2_orientation = 0.0;
+
+            navigation.goal3_pos_x = -5.57; //rtabmaphome: 1.5 //lfe:
+            navigation.goal3_pos_y = 6.9; //rtabmaphome: -1.0  //lfe:
+            navigation.goal3_pos_z = 0.0;
+            navigation.goal3_orientation = 0.0;
 
             //human-robot-interaction
             hri.backOff = true;
             hri.wait_duration = 2;
-            hri.motion_cue_distance = 1.60;
+            hri.motion_cue_distance = 2.0;
             hri.human_motion_frame_distance = 3;
 
             //back-off
-            backOff.back1_velocity = -0.3;
-            backOff.forw_velocity = 0.5;
-            backOff.back2_velocity = -0.3;
-            backOff.back1_duration = 1;
-            backOff.forw_duration = 0.5;
-            backOff.back2_duration = 0.5;
+            backOff.back_velocity = -0.4;
+            backOff.back_duration = 1;
 
         }
 

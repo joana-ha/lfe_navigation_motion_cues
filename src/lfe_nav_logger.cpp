@@ -16,18 +16,14 @@ namespace lfe_navigation{
     /// LOGGING ///
 
 
-    void LfeNavLogger::bo_log_init(double back1_velocity, double back1_duration, double forw_velocity, double forw_duration, double back2_velocity, double back2_duration, int wait_duration, std::vector<double> human_dist_seq, std::vector<double> human_dist_time_seq, double human_approach_vel, double robot_vel, std::string frame_id) {
+    void LfeNavLogger::bo_log_init(double back_velocity, double back_duration, int wait_duration, std::vector<double> human_dist_seq, std::vector<double> human_dist_time_seq, double human_approach_vel, double robot_vel, std::string frame_id) {
 
         std::string interimCounter = "bo_" + std::to_string(bo_id_counter_);
 
         bo_log_msg_.id.data = interimCounter;
 
-        bo_log_msg_.back1_velocity = back1_velocity;
-        bo_log_msg_.back1_duration = back1_duration;
-        bo_log_msg_.forw_velocity = forw_velocity;
-        bo_log_msg_.forw_duration = forw_duration;
-        bo_log_msg_.back2_velocity = back2_velocity;
-        bo_log_msg_.back2_duration = back2_duration;
+        bo_log_msg_.back_velocity = back_velocity;
+        bo_log_msg_.back_duration = back_duration;
 
         bo_log_msg_.wait_seconds = (float) wait_duration;
 
@@ -40,14 +36,10 @@ namespace lfe_navigation{
             ROS_ERROR("%s",ex.what());
         }
 
-        std::cout << "reached tf" << std::endl;
-
         bo_log_msg_.robot_lin_vel_x = robot_vel;
 
         //human robot interaction
         bo_log_msg_.human_approach_vel = human_approach_vel;
-
-        std::cout << "reached tf" << std::endl;
 
         int j = 0;
 
@@ -66,41 +58,80 @@ namespace lfe_navigation{
         bo_id_counter_++;
     }
 
-    void LfeNavLogger::st_log_init(int wait_duration, double human_approach_vel, double robot_vel, std::string frame_id) {
+    void LfeNavLogger::st_log_init(int wait_duration, std::vector<double> human_dist_seq, std::vector<double> human_dist_time_seq, double human_approach_vel, double robot_vel, std::string frame_id) {
         tf::TransformListener listener;
         tf::StampedTransform tf;
 
-        st_log_msg_.id.data = "bo_" + st_id_counter_;
+        std::string interimCounter = "st_" + std::to_string(st_id_counter_);
+
+        st_log_msg_.id.data = interimCounter;
 
         st_log_msg_.wait_seconds = (float) wait_duration;
 
-        listener.lookupTransform("/base_link", "/map", ros::Time(0), tf);
-        st_log_msg_.robot_coord.x = tf.getOrigin().x();
-        st_log_msg_.robot_coord.y = tf.getOrigin().y();
-        st_log_msg_.robot_coord.z = tf.getOrigin().z();
+        try{
+            listener_.lookupTransform("map", "base_link", ros::Time(0), tf_);
+            st_log_msg_.robot_coord.x = tf_.getOrigin().x();
+            st_log_msg_.robot_coord.y = tf_.getOrigin().y();
+            st_log_msg_.robot_coord.z = tf_.getOrigin().z();
+        } catch (tf::TransformException ex) {
+            ROS_ERROR("%s",ex.what());
+        }
 
         st_log_msg_.robot_lin_vel_x = robot_vel;
+
+        //human robot interaction
+        st_log_msg_.human_approach_vel = human_approach_vel;
+
+        int j = 0;
+
+        std::cout << "in log init before for" << std::endl;
+
+        for(int i = (human_dist_seq.size()-1); i >= 0; --i){
+            if(j < human_dist_seq.size()) {
+                st_log_msg_.human_approach_dist_seq[j] = (float) human_dist_seq.at(i);
+                st_log_msg_.human_approach_dist_time_seq[j] = (float) human_dist_time_seq.at(i);
+            }
+            j++;
+        }
+
+        std::cout << "in log init after for" << std::endl;
+
 
         st_log_msg_.header.stamp = ros::Time::now();
         st_log_msg_.header.frame_id = frame_id;
         total_duration_start_ = ros::Time::now();
 
         st_id_counter_++;
+
+        std::cout << "in log init done" << std::endl;
+
     }
 
-    void LfeNavLogger::finalize_log(bool back_off, std::vector<double> human_mc_dist_seq, std::vector<double> human_mc_dist_time_seq){
+    void LfeNavLogger::finalize_log(bool back_off, std::vector<double> human_mc_dist_seq, std::vector<double> human_mc_dist_time_seq, bool human_continue_goal){
         total_duration_end_ = ros::Time::now();
         if(back_off){
             bo_log_msg_.time4interaction = total_duration_end_.toSec() - total_duration_start_.toSec();
+            bo_log_msg_.human_continue = human_continue_goal;
 
-            for(int i = 0; i < human_mc_dist_seq.size(); i++){
-                bo_log_msg_.human_mc_dist_seq[i] = human_mc_dist_seq.at(i);
-                bo_log_msg_.human_mc_dist_time_seq[i] = human_mc_dist_time_seq.at(i);
+            for(int i = 0; i < bo_log_msg_.human_mc_dist_seq.size(); i++){
+                if ( i < human_mc_dist_seq.size()) {
+                    bo_log_msg_.human_mc_dist_seq[i] = human_mc_dist_seq.at(i);
+                    bo_log_msg_.human_mc_dist_time_seq[i] = human_mc_dist_time_seq.at(i);
+                }
             }
 
             pub_bo_log_.publish(bo_log_msg_);
         }else{
             st_log_msg_.time4interaction = total_duration_end_.toSec() - total_duration_start_.toSec();
+            st_log_msg_.human_continue = human_continue_goal;
+
+            for(int i = 0; i < st_log_msg_.human_mc_dist_seq.size(); i++){
+                if ( i < human_mc_dist_seq.size()) {
+                    st_log_msg_.human_mc_dist_seq[i] = human_mc_dist_seq.at(i);
+                    st_log_msg_.human_mc_dist_time_seq[i] = human_mc_dist_time_seq.at(i);
+                }
+            }
+
             pub_st_log_.publish(st_log_msg_);
         }
     }

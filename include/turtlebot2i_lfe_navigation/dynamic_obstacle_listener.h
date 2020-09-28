@@ -58,7 +58,6 @@ typedef dynamic_reconfigure::Server<Config> ReconfigureServer;
 
         //counters for state variables
         int body_not_received_count_;
-        int dist_array_idx_count_;
 
         //logging
         LfeNavLogger lfeNavLogger_;

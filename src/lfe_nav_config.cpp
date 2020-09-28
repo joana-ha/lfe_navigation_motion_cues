@@ -18,6 +18,10 @@ namespace lfe_navigation{
         nh.param("goal2_pos_y", navigation.goal2_pos_y, navigation.goal2_pos_y);
         nh.param("goal2_pos_z", navigation.goal2_pos_z, navigation.goal2_pos_z);
         nh.param("goal2_orientation", navigation.goal2_orientation, navigation.goal2_orientation);
+        nh.param("goal3_pos_x", navigation.goal3_pos_x, navigation.goal3_pos_x);
+        nh.param("goal3_pos_y", navigation.goal3_pos_y, navigation.goal3_pos_y);
+        nh.param("goal3_pos_z", navigation.goal3_pos_z, navigation.goal3_pos_z);
+        nh.param("goal3_orientation", navigation.goal3_orientation, navigation.goal3_orientation);
 
         //human-robot-interaction
         nh.param("backOff", hri.backOff, hri.backOff);
@@ -26,12 +30,8 @@ namespace lfe_navigation{
         nh.param("human_motion_frame_distance", hri.human_motion_frame_distance, hri.human_motion_frame_distance);
 
         //back-off
-        nh.param("back1_velocity", backOff.back1_velocity, backOff.back1_velocity);
-        nh.param("forw_velocity", backOff.forw_velocity, backOff.forw_velocity);
-        nh.param("back2_velocity", backOff.back2_velocity, backOff.back2_velocity);
-        nh.param("back1_duration", backOff.back1_duration, backOff.back1_duration);
-        nh.param("forw_duration", backOff.forw_duration, backOff.forw_duration);
-        nh.param("back2_duration", backOff.back2_duration, backOff.back2_duration);
+        nh.param("back_velocity", backOff.back_velocity, backOff.back_velocity);
+        nh.param("back_duration", backOff.back_duration, backOff.back_duration);
 
     }
 
@@ -47,6 +47,10 @@ namespace lfe_navigation{
         navigation.goal2_pos_y = cfg.goal2_pos_y;
         navigation.goal2_pos_z = cfg.goal2_pos_z;
         navigation.goal2_orientation = cfg.goal2_orientation;
+        navigation.goal3_pos_x = cfg.goal3_pos_x;
+        navigation.goal3_pos_y = cfg.goal3_pos_y;
+        navigation.goal3_pos_z = cfg.goal3_pos_z;
+        navigation.goal3_orientation = cfg.goal3_orientation;
 
         //human-robot-interaction
         hri.backOff = cfg.backOff;
@@ -55,12 +59,8 @@ namespace lfe_navigation{
         hri.human_motion_frame_distance = cfg.human_motion_frame_distance;
 
         //back-off
-        backOff.back1_velocity = cfg.back1_velocity;
-        backOff.forw_velocity = cfg.forw_velocity;
-        backOff.back2_velocity = cfg.back2_velocity;
-        backOff.back1_duration = cfg.back1_duration;
-        backOff.forw_duration = cfg.forw_duration;
-        backOff.back2_duration = cfg.back2_duration;
+        backOff.back_velocity = cfg.back_velocity;
+        backOff.back_duration = cfg.back_duration;
 
     }
 }
