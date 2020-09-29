@@ -74,7 +74,7 @@ namespace lfe_navigation {
             //human-robot-interaction
             hri.backOff = true;
             hri.wait_duration = 2;
-            hri.motion_cue_distance = 2.0;
+            hri.motion_cue_distance = 1.6;
             hri.human_motion_frame_distance = 3;
 
             //back-off

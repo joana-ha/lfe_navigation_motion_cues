@@ -68,7 +68,7 @@ namespace lfe_navigation {
         while (ros::ok()) {
             if (body_received_ == true){
 
-                    if(human_robot_distance_ >=2 && ready_to_continue_ == true && !paused_){
+                    if(human_robot_distance_ >=1.6 && ready_to_continue_ == true && !paused_){
                         std::cout << "human continue goal" << std::endl;
                         ready_to_continue_ = false;
                         human_dist_seq_.clear();
@@ -217,22 +217,29 @@ namespace lfe_navigation {
     }
 
     void DynamicObstacleListener::newDepthCallback(const sensor_msgs::ImageConstPtr& depth_msg, const sensor_msgs::CameraInfoConstPtr& info_msg){
-        const std::vector<unsigned char> data = depth_msg->data;
-        std::vector<int> image_patch;
-        int median_idx;
-        int median;
-        bool valid_pixel;
-
+        //general
         double time_stamp_nsec;
         double time_stamp_sec;
         double time_stamp;
+
+        const std::vector<unsigned char> data = depth_msg->data;
+        time_stamp_nsec = depth_msg->header.stamp.nsec;
+        time_stamp_sec = depth_msg->header.stamp.sec;
 
         unsigned char tmp_char1;
         unsigned char tmp_char2;
         unsigned int tmp_int;
 
-        time_stamp_nsec = depth_msg->header.stamp.nsec;
-        time_stamp_sec = depth_msg->header.stamp.sec;
+        //distance tracking
+        std::vector<int> image_patch;
+        int median_idx;
+        int median;
+        bool valid_pixel;
+
+        //cross-situation tracking
+        std::string frame_id = depth_msg->header.frame_id;
+        int sum = 0;
+        double avg;
 
         if(paused_ == true || ready_to_continue_ == true){
 
@@ -278,11 +285,32 @@ namespace lfe_navigation {
                     }
                 }
             }
+        }else{
+
+            if(avg_img_depth_seq_.size() == 30){
+                avg_img_depth_seq_.pop_back();
+            }
+
+            for(int i = 0; i < depth_msg->height; i++){
+                for (int j = 0; j < depth_msg->width; j++){
+                    tmp_char1 = data[j+i*depth_msg->width*2];
+                    tmp_char2 = data[(j+i*depth_msg->width*2)+1];
+                    tmp_int = ((unsigned int) ((((unsigned int)tmp_char2) << 8) & 0xFF00)) + (unsigned int) (((unsigned int) tmp_char1) & 0x00FF);
+                    sum+= tmp_int;
+                }
+            }
+
+            avg = (double) sum/((double) depth_msg->height * (double) depth_msg->width);
+
+            if((!avg_img_depth_seq_.empty() && avg == 0) || (!avg_img_depth_seq_.empty() && avg <= 700.0 && avg < ((*avg_img_depth_seq_.begin())-1000))){
+                std::cout << "cross situation backo " << std::endl;
+                paused_ = true;
+                boost::thread* motionCueThr = new boost::thread(boost::bind(&DynamicObstacleListener::executeMotionCue, this, frame_id, 0, current_robot_vel_));
+
+            }
+
+            avg_img_depth_seq_.insert(avg_img_depth_seq_.begin(), avg);
         }
-
-        //wenn ein großteil der pixel ganz plötzlich näher dran sind als der rest
-
-        //TODO nach plötzlicher Intensitätsveränderung schauen
     }
 
     void DynamicObstacleListener::executeMotionCue(std::string frame_id, double human_approach_vel, double robot_vel_avg){
@@ -291,10 +319,18 @@ namespace lfe_navigation {
         ROS_INFO("goal stop is sent");
 
         if(backOff_){
-            lfeNavLogger_.bo_log_init(cfg_.backOff.back_velocity, cfg_.backOff.back_duration, cfg_.hri.wait_duration, human_dist_seq_, human_dist_time_seq_, human_approach_vel, robot_vel_avg, frame_id);
+            if (human_approach_vel == 0){
+                lfeNavLogger_.bo_log_init(cfg_.backOff.back_velocity, cfg_.backOff.back_duration, cfg_.hri.wait_duration, robot_vel_avg, frame_id);
+            }else{
+                lfeNavLogger_.bo_log_init(cfg_.backOff.back_velocity, cfg_.backOff.back_duration, cfg_.hri.wait_duration, human_dist_seq_, human_dist_time_seq_, 0.0, robot_vel_avg, frame_id);
+            }
             navigationManager_.backOff(cfg_.backOff.back_velocity, cfg_.backOff.back_duration);
         }else{
-            lfeNavLogger_.st_log_init(cfg_.hri.wait_duration, human_dist_seq_, human_dist_time_seq_, human_approach_vel, robot_vel_avg, frame_id);
+            if (human_approach_vel == 0){
+                lfeNavLogger_.st_log_init(cfg_.hri.wait_duration, robot_vel_avg, frame_id);
+            }else{
+                lfeNavLogger_.st_log_init(cfg_.hri.wait_duration, human_dist_seq_, human_dist_time_seq_, human_approach_vel, robot_vel_avg, frame_id);
+            }
             navigationManager_.stopGoal();
         }
 

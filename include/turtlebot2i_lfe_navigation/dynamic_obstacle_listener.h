@@ -80,6 +80,9 @@ typedef dynamic_reconfigure::Server<Config> ReconfigureServer;
         boost::shared_ptr<ReconfigureServer> reconfigure_server_;
         bool config_init_;
 
+        //internal
+        std::vector<double> avg_img_depth_seq_;
+
         void setMotionCue(bool backOff);
 
         /**

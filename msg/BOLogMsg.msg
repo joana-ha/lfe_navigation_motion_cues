@@ -4,6 +4,7 @@ std_msgs/Header header
 
 # Technical BackOff parameter, id, duration in seconds, velocity in m/s, coordinates where robot stops
 std_msgs/String id
+bool cross_situation
 float64 back_duration
 float64 back_velocity
 float64 wait_seconds

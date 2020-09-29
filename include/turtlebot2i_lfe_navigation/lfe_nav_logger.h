@@ -27,8 +27,10 @@ public:
     void bo_log_init(double back_velocity, double back_duration, int wait_duration, std::vector<double> human_dist_seq, std::vector<double> human_dist_time_seq, double human_approach_vel, double robot_vel,std::string frame_id);
     void st_log_init(int wait_duration, std::vector<double> human_dist_seq, std::vector<double> human_dist_time_seq, double human_approach_vel, double robot_vel, std::string frame_id);
 
-    void finalize_log(bool back_off, std::vector<double> human_mc_dist_seq, std::vector<double> human_mc_dist_time_seq, bool human_continue_goal);
+    void bo_log_init(double back_velocity, double back_duration, int wait_duration, double robot_vel, std::string frame_id);
+    void st_log_init(int wait_duration, double robot_vel, std::string frame_id);
 
+    void finalize_log(bool back_off, std::vector<double> human_mc_dist_seq, std::vector<double> human_mc_dist_time_seq, bool human_continue_goal);
 
 private:
     //logging objects

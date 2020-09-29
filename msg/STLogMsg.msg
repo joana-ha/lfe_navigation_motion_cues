@@ -4,6 +4,7 @@ std_msgs/Header header
 
 # Technical Stop parameter, id, duration in seconds, velocity in m/s, coordinates where robot stops
 std_msgs/String id
+bool cross_situation
 float64 wait_seconds
 
 geometry_msgs/Point32 robot_coord
