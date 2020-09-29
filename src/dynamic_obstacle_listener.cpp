@@ -70,6 +70,7 @@ namespace lfe_navigation {
 
                     if(human_robot_distance_ >=1.6 && ready_to_continue_ == true && !paused_){
                         std::cout << "human continue goal" << std::endl;
+                        avg_img_depth_seq_.clear();
                         ready_to_continue_ = false;
                         human_dist_seq_.clear();
                         human_dist_time_seq_.clear();
@@ -98,6 +99,7 @@ namespace lfe_navigation {
 
                 if(body_received_ == false && ready_to_continue_ == true && !paused_){
                     std::cout << "no huamn continue goal" << std::endl;
+                    avg_img_depth_seq_.clear();
                     ready_to_continue_ = false;
                     human_dist_seq_.clear();
                     human_dist_time_seq_.clear();
@@ -231,15 +233,16 @@ namespace lfe_navigation {
         unsigned int tmp_int;
 
         //distance tracking
-        std::vector<int> image_patch;
+        std::vector<unsigned int> image_patch;
         int median_idx;
         int median;
         bool valid_pixel;
 
         //cross-situation tracking
+        std::vector<unsigned int> image_compressed;
         std::string frame_id = depth_msg->header.frame_id;
-        int sum = 0;
-        double avg;
+        unsigned int sum = 0;
+        int decrease = 0;
 
         if(paused_ == true || ready_to_continue_ == true){
 
@@ -262,7 +265,7 @@ namespace lfe_navigation {
                             image_patch.push_back(tmp_int);
                         }else{
                             //TODO write exception
-                            std::cout << "index out of bounds error" << std::endl;
+                            //std::cout << "index out of bounds error" << std::endl;
                         }
                     }
                 }
@@ -287,29 +290,70 @@ namespace lfe_navigation {
             }
         }else{
 
-            if(avg_img_depth_seq_.size() == 30){
+            if(avg_img_depth_seq_.size() == 9){
                 avg_img_depth_seq_.pop_back();
             }
 
             for(int i = 0; i < depth_msg->height; i++){
-                for (int j = 0; j < depth_msg->width; j++){
+                for (int j = 0; j < depth_msg->width; j = j+2){
                     tmp_char1 = data[j+i*depth_msg->width*2];
                     tmp_char2 = data[(j+i*depth_msg->width*2)+1];
                     tmp_int = ((unsigned int) ((((unsigned int)tmp_char2) << 8) & 0xFF00)) + (unsigned int) (((unsigned int) tmp_char1) & 0x00FF);
-                    sum+= tmp_int;
+                    image_compressed.push_back(tmp_int);
+                    //sum+= tmp_int;
                 }
             }
 
-            avg = (double) sum/((double) depth_msg->height * (double) depth_msg->width);
+            //avg = (double) sum/((double) depth_msg->height * (double) depth_msg->width);
 
-            if((!avg_img_depth_seq_.empty() && avg == 0) || (!avg_img_depth_seq_.empty() && avg <= 700.0 && avg < ((*avg_img_depth_seq_.begin())-1000))){
-                std::cout << "cross situation backo " << std::endl;
-                paused_ = true;
-                boost::thread* motionCueThr = new boost::thread(boost::bind(&DynamicObstacleListener::executeMotionCue, this, frame_id, 0, current_robot_vel_));
+            //take median of image as distance to be resilient to outliers
+            std::sort(image_compressed.begin(), image_compressed.end());
 
+            if (avg_img_depth_seq_.size() > 7 && image_compressed.at(image_compressed.size()*0.4) == 0 && (*avg_img_depth_seq_.begin()) > 1000){
+
+                //!((*(avg_img_depth_seq_.begin()+1) - (*avg_img_depth_seq_.begin())) > 400)
+                for(std::vector<double>::iterator it = avg_img_depth_seq_.begin(); it != (avg_img_depth_seq_.end()-1); ++it) {
+                    if (*it < *(it+1)){
+                        decrease++;
+                    }
+                    //only for velocity of 0.4
+                    /*if (*it == *(it+1)){
+                        decrease = 20;
+                    }*/
+                }
+
+                // > 7 for velocity 0.2, > 5 for velocity 0.4
+                if (!(decrease > 7)){
+                    std::cout << "cross situation backoff sehr nah" << std::endl;
+                    paused_ = true;
+                    boost::thread* motionCueThr = new boost::thread(boost::bind(&DynamicObstacleListener::executeMotionCue, this, frame_id, 0, current_robot_vel_));
+                }
+
+            }else{
+                //median_idx = ((image_compressed.size()+(image_compressed.size()+1))/2)-1;
+                median_idx = image_compressed.size()*0.4;
+
+                median = image_compressed.at(median_idx);
+                std::cout << "img median: " << median << std::endl;
+
+                if(!avg_img_depth_seq_.empty() && median != 0 && median <= 900.0 && median < ((*avg_img_depth_seq_.begin())-1000)){
+
+                    for(std::vector<double>::iterator it = avg_img_depth_seq_.begin(); it != (avg_img_depth_seq_.end()-1); ++it) {
+                        if (*it <= *(it+1)){
+                            decrease++;
+                        }
+                    }
+
+                    if (!(decrease > 5)){
+                        std::cout << "cross situation backoff kleiner 700" << std::endl;
+                        paused_ = true;
+                        boost::thread* motionCueThr = new boost::thread(boost::bind(&DynamicObstacleListener::executeMotionCue, this, frame_id, 0, current_robot_vel_));
+                    }
+
+                }
+
+                avg_img_depth_seq_.insert(avg_img_depth_seq_.begin(), median);
             }
-
-            avg_img_depth_seq_.insert(avg_img_depth_seq_.begin(), avg);
         }
     }
 
