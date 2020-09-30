@@ -145,8 +145,6 @@ namespace lfe_navigation {
 
             if(validLeftKnee){
                 human_robot_distance_ = bodyMsg.joint_position_base_spine.x;
-                pxl_lknee_x_ = (int) bodyMsg.pxl_joint_position_lknee_x;
-                pxl_lknee_y_ = (int) bodyMsg.pxl_joint_position_lknee_y;
 
                 human_robot_distance_ = (int)(human_robot_distance_*100+0.5)/100.0; //round to two decimal places
 
@@ -206,6 +204,8 @@ namespace lfe_navigation {
                     }
 
                     if(human_dist_decrease_ == true && human_robot_distance_ <= cfg_.hri.motion_cue_distance){
+                        pxl_lknee_x_ = (int) bodyMsg.pxl_joint_position_lknee_x;
+                        pxl_lknee_y_ = (int) bodyMsg.pxl_joint_position_lknee_y;
                         paused_ = true;
                         boost::thread* motionCueThr = new boost::thread(boost::bind(&DynamicObstacleListener::executeMotionCue, this, frame_id, human_approach_vel, robot_vel_avg));
                     }
@@ -240,9 +240,9 @@ namespace lfe_navigation {
 
         //cross-situation tracking
         std::vector<unsigned int> image_compressed;
+        std::vector<unsigned int> image_compressed_sorted;
         std::string frame_id = depth_msg->header.frame_id;
-        unsigned int sum = 0;
-        int decrease = 0;
+        std::vector<int> below_thresh_idx;
 
         if(paused_ == true || ready_to_continue_ == true){
 
@@ -294,22 +294,31 @@ namespace lfe_navigation {
                 avg_img_depth_seq_.pop_back();
             }
 
+            int k = 0;
+
             for(int i = 0; i < depth_msg->height; i++){
                 for (int j = 0; j < depth_msg->width; j = j+2){
                     tmp_char1 = data[j+i*depth_msg->width*2];
                     tmp_char2 = data[(j+i*depth_msg->width*2)+1];
                     tmp_int = ((unsigned int) ((((unsigned int)tmp_char2) << 8) & 0xFF00)) + (unsigned int) (((unsigned int) tmp_char1) & 0x00FF);
                     image_compressed.push_back(tmp_int);
+
+                    if(tmp_int <= 900){
+                        below_thresh_idx.push_back(k);
+                    }
+                    k = k+2;
                     //sum+= tmp_int;
                 }
+                k--;
             }
 
             //avg = (double) sum/((double) depth_msg->height * (double) depth_msg->width);
 
             //take median of image as distance to be resilient to outliers
-            std::sort(image_compressed.begin(), image_compressed.end());
+            image_compressed_sorted = image_compressed;
+            std::sort(image_compressed_sorted.begin(), image_compressed_sorted.end());
 
-            if (avg_img_depth_seq_.size() > 7 && image_compressed.at(image_compressed.size()*0.4) == 0 && (*avg_img_depth_seq_.begin()) > 1000){
+            /*if (avg_img_depth_seq_.size() > 7 && image_compressed.at(image_compressed.size()*0.4) == 0 && (*avg_img_depth_seq_.begin()) > 1000){
 
                 //!((*(avg_img_depth_seq_.begin()+1) - (*avg_img_depth_seq_.begin())) > 400)
                 for(std::vector<double>::iterator it = avg_img_depth_seq_.begin(); it != (avg_img_depth_seq_.end()-1); ++it) {
@@ -319,7 +328,7 @@ namespace lfe_navigation {
                     //only for velocity of 0.4
                     /*if (*it == *(it+1)){
                         decrease = 20;
-                    }*/
+                    }
                 }
 
                 // > 7 for velocity 0.2, > 5 for velocity 0.4
@@ -329,31 +338,28 @@ namespace lfe_navigation {
                     boost::thread* motionCueThr = new boost::thread(boost::bind(&DynamicObstacleListener::executeMotionCue, this, frame_id, 0, current_robot_vel_));
                 }
 
-            }else{
-                //median_idx = ((image_compressed.size()+(image_compressed.size()+1))/2)-1;
-                median_idx = image_compressed.size()*0.4;
+            } */
 
-                median = image_compressed.at(median_idx);
+                //median_idx = ((image_compressed.size()+(image_compressed.size()+1))/2)-1;
+                median_idx = image_compressed_sorted.size()*0.4;
+
+                median = image_compressed_sorted.at(median_idx);
                 std::cout << "img median: " << median << std::endl;
 
-                if(!avg_img_depth_seq_.empty() && median != 0 && median <= 900.0 && median < ((*avg_img_depth_seq_.begin())-1000)){
+                if(avg_img_depth_seq_.size() > 7 && median != 0 && median <= 900.0 && median < ((*avg_img_depth_seq_.begin())-800)){
 
-                    for(std::vector<double>::iterator it = avg_img_depth_seq_.begin(); it != (avg_img_depth_seq_.end()-1); ++it) {
-                        if (*it <= *(it+1)){
-                            decrease++;
-                        }
-                    }
+                        pxl_lknee_x_ = below_thresh_idx.at(below_thresh_idx.size()/2)%depth_msg->width;
+                        pxl_lknee_y_ = below_thresh_idx.at(below_thresh_idx.size()/2)/depth_msg->width;
 
-                    if (!(decrease > 5)){
                         std::cout << "cross situation backoff kleiner 700" << std::endl;
                         paused_ = true;
                         boost::thread* motionCueThr = new boost::thread(boost::bind(&DynamicObstacleListener::executeMotionCue, this, frame_id, 0, current_robot_vel_));
-                    }
+
 
                 }
 
                 avg_img_depth_seq_.insert(avg_img_depth_seq_.begin(), median);
-            }
+
         }
     }
 

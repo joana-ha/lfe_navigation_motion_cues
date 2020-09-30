@@ -102,7 +102,6 @@ typedef dynamic_reconfigure::Server<Config> ReconfigureServer;
         /**
          * @brief Callback to calculate distance, if bodymsg is received
          * @param msg message received from subscriber
-         * @todo calculate distance and call stop() from navigation_manager
          */
         void newBodyMsgCallback(const ros_astra_sdk_wrapper::BodyTracking& bodyMsg);
 
