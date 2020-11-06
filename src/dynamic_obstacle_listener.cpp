@@ -38,9 +38,6 @@ namespace lfe_navigation {
 
     };
 
-    DynamicObstacleListener::~DynamicObstacleListener() {
-
-    };
 
     void DynamicObstacleListener::configCb (turtlebot2i_lfe_navigation::LfeNavReconfigureConfig& config){
         cfg_.reconfigure(config);

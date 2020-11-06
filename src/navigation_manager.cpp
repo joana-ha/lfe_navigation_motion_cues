@@ -50,7 +50,6 @@ namespace lfe_navigation{
         }
 
         sendingGoal_ = true;
-        ROS_INFO("Sending goal is true, count: ", count_);
 
         std::cout << "goal 1:" << std::to_string(goal1_.target_pose.pose.position.x) << "," << std::to_string(goal1_.target_pose.pose.position.y) << "," << std::to_string(goal1_.target_pose.pose.position.z) << "," << std::to_string(goal1_.target_pose.pose.orientation.z) << std::endl;
         std::cout << "goal 2:" << std::to_string(goal2_.target_pose.pose.position.x) << "," << std::to_string(goal2_.target_pose.pose.position.y) << "," << std::to_string(goal2_.target_pose.pose.position.z) << "," << std::to_string(goal2_.target_pose.pose.orientation.z) << std::endl;
@@ -62,29 +61,22 @@ namespace lfe_navigation{
             if(sendingGoal_ == true){
                 if (count_%3 == 0){
                     ac_.sendGoal(goal1_);
-                    ROS_INFO("Goal 1 sent");
                 }
 
                 if (count_%3 == 1){
                     ac_.sendGoal(goal2_);
-                    ROS_INFO("Goal 2 sent");
                 }
 
                 if (count_%3 == 2){
                     ac_.sendGoal(goal3_);
-                    ROS_INFO("Goal 3 sent");
                 }
 
                 boost::this_thread::yield();
 
                 while(ac_.getState() == actionlib::SimpleClientGoalState::PENDING){
                     if (paused_ == true){
-                        ROS_INFO("jumped into paused_ true if after pending");
                         ac_.cancelGoal();
                         ac_.waitForResult();
-                        /*while (ac_.getState() != actionlib::SimpleClientGoalState::REJECTED){
-                            continue;
-                        }*/
                         sendingGoal_ = false;
                     }else{
                         continue;
@@ -96,14 +88,8 @@ namespace lfe_navigation{
                 if(sendingGoal_ == true){
                     while(ac_.getState() == actionlib::SimpleClientGoalState::ACTIVE){
                         if (paused_ == true){
-                            ROS_INFO("jumped into paused_ true if after active");
                             ac_.cancelGoal();
-                            ROS_INFO("goal is cancelled");
                             ac_.waitForResult();
-                            ROS_INFO("stop done");
-                            /*while (ac_.getState() != actionlib::SimpleClientGoalState::ABORTED){
-                                continue;
-                            }*/
                             sendingGoal_ = false;
                         }else{
                             continue;
@@ -115,7 +101,7 @@ namespace lfe_navigation{
 
                 if(paused_ == false && sendingGoal_ == true){
                     if (ac_.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) {
-                        ROS_INFO("Hooray, base reached goal");
+                        ROS_INFO("base reached goal");
                         count_++;
                     }
                 }
@@ -131,7 +117,6 @@ namespace lfe_navigation{
         if (sendingGoal_ == true){
             ROS_INFO("stopGoal called ");
             paused_ = true;
-            ROS_INFO("paused_ is true");
             while (sendingGoal_ == true){
                 boost::this_thread::yield();
                 continue;
@@ -144,15 +129,12 @@ namespace lfe_navigation{
     void NavigationManager::backOff(double back_velocity, double back_seconds){
 
         int count=0; //count seconds
-        //TODO rotation einbauen ?
         geometry_msgs::Twist bo_goal_back;
 
         bo_goal_back.linear.x = back_velocity;
 
         if (sendingGoal_ == true){
-            ROS_INFO("stopGoal called ");
             paused_ = true;
-            ROS_INFO("paused_ is true");
             while (sendingGoal_ == true){
                 boost::this_thread::yield();
                 continue;
@@ -160,18 +142,13 @@ namespace lfe_navigation{
 
             count = 0;
 
-            std::cout << "back seconds " << back_seconds << std::endl;
-
             while(count < back_seconds*4){
-                ROS_INFO("sending first bo ");
                 pub_vel_bo_.publish(bo_goal_back);
                 usleep(250*1000);
                 count++;
             }
 
             ROS_INFO("first bo done ");
-
-            ROS_INFO("paused_ is false");
             paused_ = false;
         }
     }
@@ -179,9 +156,7 @@ namespace lfe_navigation{
 
     void NavigationManager::continueGoal(int seconds){
         if(!sendingGoal_ && !paused_){
-            ROS_INFO("continueGoal called ");
             usleep(seconds*1000*1000);
-            ROS_INFO("waited for 10 secs ");
             sendingGoal_ = true;
         }
     }

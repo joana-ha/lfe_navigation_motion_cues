@@ -1,6 +1,40 @@
-//
-// Created by turtlebot on 16.09.20.
-//
+/*********************************************************************
+ *
+ * Software License Agreement (BSD License)
+ *
+ *  Copyright (c) 2020,
+ *  TU Munich - Lehrstuhl fuer Ergonomie.
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above
+ *     copyright notice, this list of conditions and the following
+ *     disclaimer in the documentation and/or other materials provided
+ *     with the distribution.
+ *   * Neither the name of the institute nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ *  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ *  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *  POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Authors: Joana Haase
+ *********************************************************************/
 
 #ifndef SRC_LFE_NAV_CONFIG_H
 #define SRC_LFE_NAV_CONFIG_H
@@ -17,6 +51,9 @@
 
 namespace lfe_navigation {
 
+    /**
+     * @brief The LfeNavConfig class is used as a data type for dynamic configurations.
+     */
     class LfeNavConfig {
 
     public:
@@ -56,18 +93,18 @@ namespace lfe_navigation {
         LfeNavConfig() {
 
             //navigation
-            navigation.goal1_pos_x = -5.95; //kraftraum: 0.5 //allraumtest: 0.33  //rtabmaphome: 2.0 //lfe: -17.3
-            navigation.goal1_pos_y = -12.1; //kraftraum:-2.3 //allraumtest: -1.75 //rthabmaphome: -3.3 //lfe: -26.2
+            navigation.goal1_pos_x = -4.04; //kraftraum: 0.5 //allraumtest: 0.33  //rtabmaphome: 2.0 //lfe: -17.3
+            navigation.goal1_pos_y = 11.4; //kraftraum:-2.3 //allraumtest: -1.75 //rthabmaphome: -3.3 //lfe: -26.2
             navigation.goal1_pos_z = 0.0;
             navigation.goal1_orientation = 0.0;
 
-            navigation.goal2_pos_x = 3.74; //kraftraum:1.56 //allraumtest: -2.4 //rtabmaphome: 0.4 //lfe: 1.13
-            navigation.goal2_pos_y = 4.83; //kraftraum:2.6 //allraumtest: -3.77 //rtabmaphome: -0.95 //lfe: -0.59
+            navigation.goal2_pos_x = 3.09; //kraftraum:1.56 //allraumtest: -2.4 //rtabmaphome: 0.4 //lfe: 1.13
+            navigation.goal2_pos_y = 6.04; //kraftraum:2.6 //allraumtest: -3.77 //rtabmaphome: -0.95 //lfe: -0.59
             navigation.goal2_pos_z = 0.0;
             navigation.goal2_orientation = 0.0;
 
-            navigation.goal3_pos_x = -0.27; //rtabmaphome: 1.5 //lfe:
-            navigation.goal3_pos_y = -1.85; //rtabmaphome: -1.0  //lfe:
+            navigation.goal3_pos_x = 0.11; //rtabmaphome: 1.5 //lfe:
+            navigation.goal3_pos_y = -2.48; //rtabmaphome: -1.0  //lfe:
             navigation.goal3_pos_z = 0.0;
             navigation.goal3_orientation = 0.0;
 
@@ -84,7 +121,7 @@ namespace lfe_navigation {
         }
 
         /**
-         * @brief Load parmeters from the ros param server.
+         * @brief Load parameters from the configuration user interface via nodehandle.
          * @param nh const reference to the local ros::NodeHandle
          */
         void loadRosParamFromNodeHandle(const ros::NodeHandle& nh);
