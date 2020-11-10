@@ -39,9 +39,6 @@ namespace lfe_navigation{
 
     }
 
-    NavigationManager::~NavigationManager() {
-
-    }
 
     void NavigationManager::sendGoal(){
 

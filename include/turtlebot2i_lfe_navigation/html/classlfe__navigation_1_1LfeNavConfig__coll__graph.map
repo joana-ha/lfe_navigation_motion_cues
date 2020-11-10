@@ -1,0 +1,5 @@
+<map id="lfe_navigation::LfeNavConfig" name="lfe_navigation::LfeNavConfig">
+<area shape="rect" id="node2" href="$structlfe__navigation_1_1LfeNavConfig_1_1HumanRobotInteraction.html" title="lfe_navigation::LfeNavConfig\l::HumanRobotInteraction" alt="" coords="5,5,196,47"/>
+<area shape="rect" id="node3" href="$structlfe__navigation_1_1LfeNavConfig_1_1Navigation.html" title="lfe_navigation::LfeNavConfig\l::Navigation" alt="" coords="5,71,196,112"/>
+<area shape="rect" id="node4" href="$structlfe__navigation_1_1LfeNavConfig_1_1BackOff.html" title="lfe_navigation::LfeNavConfig\l::BackOff" alt="" coords="5,136,196,177"/>
+</map>

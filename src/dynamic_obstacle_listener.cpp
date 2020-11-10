@@ -25,7 +25,8 @@ namespace lfe_navigation {
         }
         ROS_DEBUG("Dynamic reconfigure configuration received.");
 
-        std::cout << "Dynamic Reconfigure Server is up. Please make configurations now and press ENTER when you are ready." << std::endl;
+        std::cout << "Dynamic Reconfigure Server is up. Please make configurations by typing " << std::endl
+             << "rosrun rqt_reconfigure rqt_reconfigure" << std::endl << "and press ENTER when you are ready." << std::endl;
         std::cin.get();
         std::cout << "Please remove all cables from the robot and press ENTER to start robot navigation." << std::endl;
         std::cin.get();
@@ -65,8 +66,7 @@ namespace lfe_navigation {
         while (ros::ok()) {
             if (body_received_ == true){
 
-                    if(human_robot_distance_ >=1.6 && ready_to_continue_ == true && !paused_){
-                        std::cout << "human continue goal" << std::endl;
+                    if(human_robot_distance_ >=cfg_.hri.motion_cue_distance && ready_to_continue_ == true && !paused_){
                         avg_img_depth_seq_.clear();
                         ready_to_continue_ = false;
                         human_dist_seq_.clear();
@@ -95,7 +95,6 @@ namespace lfe_navigation {
             }else{
 
                 if(body_received_ == false && ready_to_continue_ == true && !paused_){
-                    std::cout << "no huamn continue goal" << std::endl;
                     avg_img_depth_seq_.clear();
                     ready_to_continue_ = false;
                     human_dist_seq_.clear();
@@ -103,7 +102,6 @@ namespace lfe_navigation {
                     robot_vel_seq_.clear();
                     human_dist_decrease_ = false;
                     human_continue_goal = false;
-                    std::cout << "step1" << std::endl;
                     lfeNavLogger_.finalize_log(cfg_.hri.backOff, human_mc_dist_seq_, human_mc_dist_time_seq_, human_continue_goal);
                     human_mc_dist_seq_.clear();
                     human_mc_dist_time_seq_.clear();
@@ -145,7 +143,6 @@ namespace lfe_navigation {
 
                 human_robot_distance_ = (int)(human_robot_distance_*100+0.5)/100.0; //round to two decimal places
 
-                std::cout << "distance: " << human_robot_distance_ << std::endl;
 
                 if (paused_ == true || ready_to_continue_ == true){
                     human_mc_dist_seq_.push_back(human_robot_distance_);
@@ -192,7 +189,7 @@ namespace lfe_navigation {
                     human_approach_vel = (int)(human_approach_vel*100+0.5)/100.0;
 
                     //optionally, robot velocity can be subtracted from human approach vel
-                    human_approach_vel = human_approach_vel;//-robot_vel_avg;
+                    //human_approach_vel = human_approach_vel-robot_vel_avg;
 
                     if (decrease > 12){
                         human_dist_decrease_ = true;
@@ -204,6 +201,7 @@ namespace lfe_navigation {
                         pxl_lknee_x_ = (int) bodyMsg.pxl_joint_position_lknee_x;
                         pxl_lknee_y_ = (int) bodyMsg.pxl_joint_position_lknee_y;
                         paused_ = true;
+                        std::cout << "vel1 " << human_approach_vel << std::endl;
                         boost::thread* motionCueThr = new boost::thread(boost::bind(&DynamicObstacleListener::executeMotionCue, this, frame_id, human_approach_vel, robot_vel_avg));
                     }
                 }
@@ -261,7 +259,7 @@ namespace lfe_navigation {
                             tmp_int = ((unsigned int) ((((unsigned int)tmp_char2) << 8) & 0xFF00)) + (unsigned int) (((unsigned int) tmp_char1) & 0x00FF);
                             image_patch.push_back(tmp_int);
                         }else{
-                            //TODO write exception
+                            //TODO thruogh exception
                             //std::cout << "index out of bounds error" << std::endl;
                         }
                     }
@@ -272,7 +270,6 @@ namespace lfe_navigation {
                 std::sort(image_patch.begin(), image_patch.end());
                 median_idx = ((image_patch.size()+(image_patch.size()+1))/2)-1;
                 median = image_patch.at(median_idx);
-                std::cout << "depth median: " << median << std::endl;
 
                 //use depth stream median instead of body tracking msg, if distance < 1 meter, is more accurate
                 if(median < 1000){
@@ -341,14 +338,12 @@ namespace lfe_navigation {
                 median_idx = image_compressed_sorted.size()*0.4;
 
                 median = image_compressed_sorted.at(median_idx);
-                std::cout << "img median: " << median << std::endl;
 
                 if(avg_img_depth_seq_.size() > 7 && median != 0 && median <= 900.0 && median < ((*avg_img_depth_seq_.begin())-800)){
 
                         pxl_lknee_x_ = below_thresh_idx.at(below_thresh_idx.size()/2)%depth_msg->width;
                         pxl_lknee_y_ = below_thresh_idx.at(below_thresh_idx.size()/2)/depth_msg->width;
 
-                        std::cout << "cross situation backoff kleiner 700" << std::endl;
                         paused_ = true;
                         boost::thread* motionCueThr = new boost::thread(boost::bind(&DynamicObstacleListener::executeMotionCue, this, frame_id, 0, current_robot_vel_));
 
@@ -367,6 +362,7 @@ namespace lfe_navigation {
 
         if(backOff_){
             if (human_approach_vel == 0){
+                std::cout << "vel2 " << human_approach_vel << std::endl;
                 lfeNavLogger_.bo_log_init(cfg_.backOff.back_velocity, cfg_.backOff.back_duration, cfg_.hri.wait_duration, robot_vel_avg, frame_id);
             }else{
                 lfeNavLogger_.bo_log_init(cfg_.backOff.back_velocity, cfg_.backOff.back_duration, cfg_.hri.wait_duration, human_dist_seq_, human_dist_time_seq_, 0.0, robot_vel_avg, frame_id);

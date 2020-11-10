@@ -1,0 +1,174 @@
+\hypertarget{classlfe__navigation_1_1NavigationManager}{}\section{lfe\+\_\+navigation\+:\+:Navigation\+Manager Class Reference}
+\label{classlfe__navigation_1_1NavigationManager}\index{lfe\+\_\+navigation\+::\+Navigation\+Manager@{lfe\+\_\+navigation\+::\+Navigation\+Manager}}
+
+
+The \hyperlink{classlfe__navigation_1_1NavigationManager}{Navigation\+Manager} contains all methods responsible for navigation.  
+
+
+
+
+{\ttfamily \#include $<$navigation\+\_\+manager.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classlfe__navigation_1_1NavigationManager_a04357660f9d9c640eb3aefc382def800}{Navigation\+Manager} (ros\+::\+Node\+Handle \&nh)
+\begin{DoxyCompactList}\small\item\em Overloaded constructor that takes in a nodehandle. \end{DoxyCompactList}\item 
+void \hyperlink{classlfe__navigation_1_1NavigationManager_a708b61e1da4997d9e52dba82ce8abdb9}{send\+Goal} ()\hypertarget{classlfe__navigation_1_1NavigationManager_a708b61e1da4997d9e52dba82ce8abdb9}{}\label{classlfe__navigation_1_1NavigationManager_a708b61e1da4997d9e52dba82ce8abdb9}
+
+\begin{DoxyCompactList}\small\item\em Method sending goals to the actionlib server. \end{DoxyCompactList}\item 
+void \hyperlink{classlfe__navigation_1_1NavigationManager_a8a263bf41e271138c7827c4dd5ab85fa}{stop\+Goal} ()\hypertarget{classlfe__navigation_1_1NavigationManager_a8a263bf41e271138c7827c4dd5ab85fa}{}\label{classlfe__navigation_1_1NavigationManager_a8a263bf41e271138c7827c4dd5ab85fa}
+
+\begin{DoxyCompactList}\small\item\em Method setting paused\+\_\+ to true. Paused\+\_\+ stops the navigation in \hyperlink{classlfe__navigation_1_1NavigationManager_a708b61e1da4997d9e52dba82ce8abdb9}{send\+Goal()} method. \end{DoxyCompactList}\item 
+void \hyperlink{classlfe__navigation_1_1NavigationManager_ac779f9a9e239b22a3c3442f4fccafced}{back\+Off} (double back\+\_\+velocity, double back\+\_\+seconds)
+\begin{DoxyCompactList}\small\item\em Method executing the back-\/off motion cue. \end{DoxyCompactList}\item 
+void \hyperlink{classlfe__navigation_1_1NavigationManager_a52d2f66551c0537ee109013bb0a4fb06}{continue\+Goal} (int seconds)
+\begin{DoxyCompactList}\small\item\em Method Setting sending\+Goal\+\_\+ to true to continue the navigation. \end{DoxyCompactList}\item 
+void \hyperlink{classlfe__navigation_1_1NavigationManager_a6294d8559a40febde615c1d91e79a6ff}{set\+Goal1} (double x, double y, double z, double orientation)
+\begin{DoxyCompactList}\small\item\em Method setting new coordinates to goal1\+\_\+ variable. \end{DoxyCompactList}\item 
+void \hyperlink{classlfe__navigation_1_1NavigationManager_add3a6bd2acafa6f4ac950d71603bd97e}{set\+Goal2} (double x, double y, double z, double orientation)
+\begin{DoxyCompactList}\small\item\em Method setting new coordinates to goal2\+\_\+ variable. \end{DoxyCompactList}\item 
+void \hyperlink{classlfe__navigation_1_1NavigationManager_a8a751145c42018976caf845a64c8f6ea}{set\+Goal3} (double x, double y, double z, double orientation)
+\begin{DoxyCompactList}\small\item\em Method setting new coordinates to goal3\+\_\+ variable. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classlfe__navigation_1_1NavigationManager}{Navigation\+Manager} contains all methods responsible for navigation. 
+
+The \hyperlink{classlfe__navigation_1_1NavigationManager}{Navigation\+Manager} class manages the communication with the action\+Lib server and executes the motion cues. It is responsible to start, cancel and continue a navigation goal. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{lfe\+\_\+navigation\+::\+Navigation\+Manager@{lfe\+\_\+navigation\+::\+Navigation\+Manager}!Navigation\+Manager@{Navigation\+Manager}}
+\index{Navigation\+Manager@{Navigation\+Manager}!lfe\+\_\+navigation\+::\+Navigation\+Manager@{lfe\+\_\+navigation\+::\+Navigation\+Manager}}
+\subsubsection[{\texorpdfstring{Navigation\+Manager(ros\+::\+Node\+Handle \&nh)}{NavigationManager(ros::NodeHandle &nh)}}]{\setlength{\rightskip}{0pt plus 5cm}lfe\+\_\+navigation\+::\+Navigation\+Manager\+::\+Navigation\+Manager (
+\begin{DoxyParamCaption}
+\item[{ros\+::\+Node\+Handle \&}]{nh}
+\end{DoxyParamCaption}
+)}\hypertarget{classlfe__navigation_1_1NavigationManager_a04357660f9d9c640eb3aefc382def800}{}\label{classlfe__navigation_1_1NavigationManager_a04357660f9d9c640eb3aefc382def800}
+
+
+Overloaded constructor that takes in a nodehandle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em nh} & The nodehandle by which back-\/off backwards velocity is published for wheel control \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\index{lfe\+\_\+navigation\+::\+Navigation\+Manager@{lfe\+\_\+navigation\+::\+Navigation\+Manager}!back\+Off@{back\+Off}}
+\index{back\+Off@{back\+Off}!lfe\+\_\+navigation\+::\+Navigation\+Manager@{lfe\+\_\+navigation\+::\+Navigation\+Manager}}
+\subsubsection[{\texorpdfstring{back\+Off(double back\+\_\+velocity, double back\+\_\+seconds)}{backOff(double back_velocity, double back_seconds)}}]{\setlength{\rightskip}{0pt plus 5cm}void lfe\+\_\+navigation\+::\+Navigation\+Manager\+::back\+Off (
+\begin{DoxyParamCaption}
+\item[{double}]{back\+\_\+velocity, }
+\item[{double}]{back\+\_\+seconds}
+\end{DoxyParamCaption}
+)}\hypertarget{classlfe__navigation_1_1NavigationManager_ac779f9a9e239b22a3c3442f4fccafced}{}\label{classlfe__navigation_1_1NavigationManager_ac779f9a9e239b22a3c3442f4fccafced}
+
+
+Method executing the back-\/off motion cue. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em back\+\_\+velocity} & Backwards velocity \\
+\hline
+{\em back\+\_\+seconds} & Back-\/off duration in seconds \\
+\hline
+\end{DoxyParams}
+\index{lfe\+\_\+navigation\+::\+Navigation\+Manager@{lfe\+\_\+navigation\+::\+Navigation\+Manager}!continue\+Goal@{continue\+Goal}}
+\index{continue\+Goal@{continue\+Goal}!lfe\+\_\+navigation\+::\+Navigation\+Manager@{lfe\+\_\+navigation\+::\+Navigation\+Manager}}
+\subsubsection[{\texorpdfstring{continue\+Goal(int seconds)}{continueGoal(int seconds)}}]{\setlength{\rightskip}{0pt plus 5cm}void lfe\+\_\+navigation\+::\+Navigation\+Manager\+::continue\+Goal (
+\begin{DoxyParamCaption}
+\item[{int}]{seconds}
+\end{DoxyParamCaption}
+)}\hypertarget{classlfe__navigation_1_1NavigationManager_a52d2f66551c0537ee109013bb0a4fb06}{}\label{classlfe__navigation_1_1NavigationManager_a52d2f66551c0537ee109013bb0a4fb06}
+
+
+Method Setting sending\+Goal\+\_\+ to true to continue the navigation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em seconds} & Time to wait before continuing the navigation in seconds \\
+\hline
+\end{DoxyParams}
+\index{lfe\+\_\+navigation\+::\+Navigation\+Manager@{lfe\+\_\+navigation\+::\+Navigation\+Manager}!set\+Goal1@{set\+Goal1}}
+\index{set\+Goal1@{set\+Goal1}!lfe\+\_\+navigation\+::\+Navigation\+Manager@{lfe\+\_\+navigation\+::\+Navigation\+Manager}}
+\subsubsection[{\texorpdfstring{set\+Goal1(double x, double y, double z, double orientation)}{setGoal1(double x, double y, double z, double orientation)}}]{\setlength{\rightskip}{0pt plus 5cm}void lfe\+\_\+navigation\+::\+Navigation\+Manager\+::set\+Goal1 (
+\begin{DoxyParamCaption}
+\item[{double}]{x, }
+\item[{double}]{y, }
+\item[{double}]{z, }
+\item[{double}]{orientation}
+\end{DoxyParamCaption}
+)}\hypertarget{classlfe__navigation_1_1NavigationManager_a6294d8559a40febde615c1d91e79a6ff}{}\label{classlfe__navigation_1_1NavigationManager_a6294d8559a40febde615c1d91e79a6ff}
+
+
+Method setting new coordinates to goal1\+\_\+ variable. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & x-\/coordinate \\
+\hline
+{\em y} & y-\/coordinate \\
+\hline
+{\em z} & z-\/coordinate \\
+\hline
+{\em orientation} & Angular orientation around z-\/axis \\
+\hline
+\end{DoxyParams}
+\index{lfe\+\_\+navigation\+::\+Navigation\+Manager@{lfe\+\_\+navigation\+::\+Navigation\+Manager}!set\+Goal2@{set\+Goal2}}
+\index{set\+Goal2@{set\+Goal2}!lfe\+\_\+navigation\+::\+Navigation\+Manager@{lfe\+\_\+navigation\+::\+Navigation\+Manager}}
+\subsubsection[{\texorpdfstring{set\+Goal2(double x, double y, double z, double orientation)}{setGoal2(double x, double y, double z, double orientation)}}]{\setlength{\rightskip}{0pt plus 5cm}void lfe\+\_\+navigation\+::\+Navigation\+Manager\+::set\+Goal2 (
+\begin{DoxyParamCaption}
+\item[{double}]{x, }
+\item[{double}]{y, }
+\item[{double}]{z, }
+\item[{double}]{orientation}
+\end{DoxyParamCaption}
+)}\hypertarget{classlfe__navigation_1_1NavigationManager_add3a6bd2acafa6f4ac950d71603bd97e}{}\label{classlfe__navigation_1_1NavigationManager_add3a6bd2acafa6f4ac950d71603bd97e}
+
+
+Method setting new coordinates to goal2\+\_\+ variable. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & x-\/coordinate \\
+\hline
+{\em y} & y-\/coordinate \\
+\hline
+{\em z} & z-\/coordinate \\
+\hline
+{\em orientation} & Angular orientation around z-\/axis \\
+\hline
+\end{DoxyParams}
+\index{lfe\+\_\+navigation\+::\+Navigation\+Manager@{lfe\+\_\+navigation\+::\+Navigation\+Manager}!set\+Goal3@{set\+Goal3}}
+\index{set\+Goal3@{set\+Goal3}!lfe\+\_\+navigation\+::\+Navigation\+Manager@{lfe\+\_\+navigation\+::\+Navigation\+Manager}}
+\subsubsection[{\texorpdfstring{set\+Goal3(double x, double y, double z, double orientation)}{setGoal3(double x, double y, double z, double orientation)}}]{\setlength{\rightskip}{0pt plus 5cm}void lfe\+\_\+navigation\+::\+Navigation\+Manager\+::set\+Goal3 (
+\begin{DoxyParamCaption}
+\item[{double}]{x, }
+\item[{double}]{y, }
+\item[{double}]{z, }
+\item[{double}]{orientation}
+\end{DoxyParamCaption}
+)}\hypertarget{classlfe__navigation_1_1NavigationManager_a8a751145c42018976caf845a64c8f6ea}{}\label{classlfe__navigation_1_1NavigationManager_a8a751145c42018976caf845a64c8f6ea}
+
+
+Method setting new coordinates to goal3\+\_\+ variable. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & x-\/coordinate \\
+\hline
+{\em y} & y-\/coordinate \\
+\hline
+{\em z} & z-\/coordinate \\
+\hline
+{\em orientation} & Angular orientation around z-\/axis \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+navigation\+\_\+manager.\+h\end{DoxyCompactItemize}

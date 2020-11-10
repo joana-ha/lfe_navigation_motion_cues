@@ -1,0 +1,201 @@
+\hypertarget{classlfe__navigation_1_1LfeNavLogger}{}\section{lfe\+\_\+navigation\+:\+:Lfe\+Nav\+Logger Class Reference}
+\label{classlfe__navigation_1_1LfeNavLogger}\index{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger}}
+
+
+The \hyperlink{classlfe__navigation_1_1LfeNavLogger}{Lfe\+Nav\+Logger} is responsible for parameter logging and publishing of log data as messages.  
+
+
+
+
+{\ttfamily \#include $<$lfe\+\_\+nav\+\_\+logger.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classlfe__navigation_1_1LfeNavLogger_a69c8bb8c1ffa217d452ebfce0fe01830}{Lfe\+Nav\+Logger} (ros\+::\+Node\+Handle \&nh)
+\begin{DoxyCompactList}\small\item\em Overloaded constructor that takes in a nodehandle. \end{DoxyCompactList}\item 
+void \hyperlink{classlfe__navigation_1_1LfeNavLogger_adca0a164d19d1d6fe5cfd9f8971c1789}{bo\+\_\+log\+\_\+init} (double back\+\_\+velocity, double back\+\_\+duration, int wait\+\_\+duration, std\+::vector$<$ double $>$ human\+\_\+dist\+\_\+seq, std\+::vector$<$ double $>$ human\+\_\+dist\+\_\+time\+\_\+seq, double human\+\_\+approach\+\_\+vel, double robot\+\_\+vel, std\+::string frame\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Overloaded method to initialize a back-\/off log message in a frontal path-\/crossing situation. \end{DoxyCompactList}\item 
+void \hyperlink{classlfe__navigation_1_1LfeNavLogger_a39d9b5ec6adc8b0e9f2a4231e6bc42d7}{st\+\_\+log\+\_\+init} (int wait\+\_\+duration, std\+::vector$<$ double $>$ human\+\_\+dist\+\_\+seq, std\+::vector$<$ double $>$ human\+\_\+dist\+\_\+time\+\_\+seq, double human\+\_\+approach\+\_\+vel, double robot\+\_\+vel, std\+::string frame\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Overloaded method to initialize a stop motion cue log message in a frontal path-\/crossing situation. \end{DoxyCompactList}\item 
+void \hyperlink{classlfe__navigation_1_1LfeNavLogger_a4354882dc26d1d1a2d54cae0c103819d}{bo\+\_\+log\+\_\+init} (double back\+\_\+velocity, double back\+\_\+duration, int wait\+\_\+duration, double robot\+\_\+vel, std\+::string frame\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Overloaded method to initialize a back-\/off log message in a lateral path-\/crossing situation. \end{DoxyCompactList}\item 
+void \hyperlink{classlfe__navigation_1_1LfeNavLogger_aa33f5443f3ef9967303434786bdad551}{st\+\_\+log\+\_\+init} (int wait\+\_\+duration, double robot\+\_\+vel, std\+::string frame\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Overloaded method to initialize a stop motion cue log message in a lateral path-\/crossing situation. \end{DoxyCompactList}\item 
+void \hyperlink{classlfe__navigation_1_1LfeNavLogger_a1496e394cd69320d480dd30d0c66b319}{finalize\+\_\+log} (bool back\+\_\+off, std\+::vector$<$ double $>$ human\+\_\+mc\+\_\+dist\+\_\+seq, std\+::vector$<$ double $>$ human\+\_\+mc\+\_\+dist\+\_\+time\+\_\+seq, bool human\+\_\+continue\+\_\+goal)
+\begin{DoxyCompactList}\small\item\em Method finalizing the logging of both, back-\/off and stop motion cue, and publishing it as a message. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classlfe__navigation_1_1LfeNavLogger}{Lfe\+Nav\+Logger} is responsible for parameter logging and publishing of log data as messages. 
+
+Methods of the \hyperlink{classlfe__navigation_1_1LfeNavLogger}{Lfe\+Nav\+Logger} are called by the \hyperlink{classlfe__navigation_1_1DynamicObstacleListener}{Dynamic\+Obstacle\+Listener} to initialize or finalize a logging message. Logging messages are published and can be recorded into bagfiles. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger}!Lfe\+Nav\+Logger@{Lfe\+Nav\+Logger}}
+\index{Lfe\+Nav\+Logger@{Lfe\+Nav\+Logger}!lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger}}
+\subsubsection[{\texorpdfstring{Lfe\+Nav\+Logger(ros\+::\+Node\+Handle \&nh)}{LfeNavLogger(ros::NodeHandle &nh)}}]{\setlength{\rightskip}{0pt plus 5cm}lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger\+::\+Lfe\+Nav\+Logger (
+\begin{DoxyParamCaption}
+\item[{ros\+::\+Node\+Handle \&}]{nh}
+\end{DoxyParamCaption}
+)}\hypertarget{classlfe__navigation_1_1LfeNavLogger_a69c8bb8c1ffa217d452ebfce0fe01830}{}\label{classlfe__navigation_1_1LfeNavLogger_a69c8bb8c1ffa217d452ebfce0fe01830}
+
+
+Overloaded constructor that takes in a nodehandle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em nh} & The nodehandle by which logging messages are published \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\index{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger}!bo\+\_\+log\+\_\+init@{bo\+\_\+log\+\_\+init}}
+\index{bo\+\_\+log\+\_\+init@{bo\+\_\+log\+\_\+init}!lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger}}
+\subsubsection[{\texorpdfstring{bo\+\_\+log\+\_\+init(double back\+\_\+velocity, double back\+\_\+duration, int wait\+\_\+duration, std\+::vector$<$ double $>$ human\+\_\+dist\+\_\+seq, std\+::vector$<$ double $>$ human\+\_\+dist\+\_\+time\+\_\+seq, double human\+\_\+approach\+\_\+vel, double robot\+\_\+vel, std\+::string frame\+\_\+id)}{bo_log_init(double back_velocity, double back_duration, int wait_duration, std::vector< double > human_dist_seq, std::vector< double > human_dist_time_seq, double human_approach_vel, double robot_vel, std::string frame_id)}}]{\setlength{\rightskip}{0pt plus 5cm}void lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger\+::bo\+\_\+log\+\_\+init (
+\begin{DoxyParamCaption}
+\item[{double}]{back\+\_\+velocity, }
+\item[{double}]{back\+\_\+duration, }
+\item[{int}]{wait\+\_\+duration, }
+\item[{std\+::vector$<$ double $>$}]{human\+\_\+dist\+\_\+seq, }
+\item[{std\+::vector$<$ double $>$}]{human\+\_\+dist\+\_\+time\+\_\+seq, }
+\item[{double}]{human\+\_\+approach\+\_\+vel, }
+\item[{double}]{robot\+\_\+vel, }
+\item[{std\+::string}]{frame\+\_\+id}
+\end{DoxyParamCaption}
+)}\hypertarget{classlfe__navigation_1_1LfeNavLogger_adca0a164d19d1d6fe5cfd9f8971c1789}{}\label{classlfe__navigation_1_1LfeNavLogger_adca0a164d19d1d6fe5cfd9f8971c1789}
+
+
+Overloaded method to initialize a back-\/off log message in a frontal path-\/crossing situation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em back\+\_\+velocity} & Configured back-\/off backwards velocity \\
+\hline
+{\em back\+\_\+duration} & Configured duration of the back-\/off \\
+\hline
+{\em wait\+\_\+duration} & Configured duration to wait before navigation is continued \\
+\hline
+{\em human\+\_\+dist\+\_\+seq} & Stores the distances of the approaching human \\
+\hline
+{\em human\+\_\+dist\+\_\+time\+\_\+seq} & Stores the timestamp of the distances in human\+\_\+dist\+\_\+seq \\
+\hline
+{\em human\+\_\+approach\+\_\+vel} & Stores the approaching velocity of the human \\
+\hline
+{\em robot\+\_\+vel} & Current robot velocity \\
+\hline
+{\em frame\+\_\+id} & Frame id of the image, from which the back-\/off was triggered \\
+\hline
+\end{DoxyParams}
+\index{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger}!bo\+\_\+log\+\_\+init@{bo\+\_\+log\+\_\+init}}
+\index{bo\+\_\+log\+\_\+init@{bo\+\_\+log\+\_\+init}!lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger}}
+\subsubsection[{\texorpdfstring{bo\+\_\+log\+\_\+init(double back\+\_\+velocity, double back\+\_\+duration, int wait\+\_\+duration, double robot\+\_\+vel, std\+::string frame\+\_\+id)}{bo_log_init(double back_velocity, double back_duration, int wait_duration, double robot_vel, std::string frame_id)}}]{\setlength{\rightskip}{0pt plus 5cm}void lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger\+::bo\+\_\+log\+\_\+init (
+\begin{DoxyParamCaption}
+\item[{double}]{back\+\_\+velocity, }
+\item[{double}]{back\+\_\+duration, }
+\item[{int}]{wait\+\_\+duration, }
+\item[{double}]{robot\+\_\+vel, }
+\item[{std\+::string}]{frame\+\_\+id}
+\end{DoxyParamCaption}
+)}\hypertarget{classlfe__navigation_1_1LfeNavLogger_a4354882dc26d1d1a2d54cae0c103819d}{}\label{classlfe__navigation_1_1LfeNavLogger_a4354882dc26d1d1a2d54cae0c103819d}
+
+
+Overloaded method to initialize a back-\/off log message in a lateral path-\/crossing situation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em back\+\_\+velocity} & Configured back-\/off backwards velocity \\
+\hline
+{\em back\+\_\+duration} & Configured duration of the back-\/off \\
+\hline
+{\em wait\+\_\+duration} & Configured duration to wait before navigation is continued \\
+\hline
+{\em robot\+\_\+vel} & Current robot velocity \\
+\hline
+{\em frame\+\_\+id} & Frame id of the image, from which the back-\/off was triggered \\
+\hline
+\end{DoxyParams}
+\index{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger}!finalize\+\_\+log@{finalize\+\_\+log}}
+\index{finalize\+\_\+log@{finalize\+\_\+log}!lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger}}
+\subsubsection[{\texorpdfstring{finalize\+\_\+log(bool back\+\_\+off, std\+::vector$<$ double $>$ human\+\_\+mc\+\_\+dist\+\_\+seq, std\+::vector$<$ double $>$ human\+\_\+mc\+\_\+dist\+\_\+time\+\_\+seq, bool human\+\_\+continue\+\_\+goal)}{finalize_log(bool back_off, std::vector< double > human_mc_dist_seq, std::vector< double > human_mc_dist_time_seq, bool human_continue_goal)}}]{\setlength{\rightskip}{0pt plus 5cm}void lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger\+::finalize\+\_\+log (
+\begin{DoxyParamCaption}
+\item[{bool}]{back\+\_\+off, }
+\item[{std\+::vector$<$ double $>$}]{human\+\_\+mc\+\_\+dist\+\_\+seq, }
+\item[{std\+::vector$<$ double $>$}]{human\+\_\+mc\+\_\+dist\+\_\+time\+\_\+seq, }
+\item[{bool}]{human\+\_\+continue\+\_\+goal}
+\end{DoxyParamCaption}
+)}\hypertarget{classlfe__navigation_1_1LfeNavLogger_a1496e394cd69320d480dd30d0c66b319}{}\label{classlfe__navigation_1_1LfeNavLogger_a1496e394cd69320d480dd30d0c66b319}
+
+
+Method finalizing the logging of both, back-\/off and stop motion cue, and publishing it as a message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em back\+\_\+off} & True, if motion cue is back-\/off, False, if motion cue is stop \\
+\hline
+{\em human\+\_\+mc\+\_\+dist\+\_\+seq} & Stores the distances of the human during the motion cue execution \\
+\hline
+{\em human\+\_\+mc\+\_\+dist\+\_\+time\+\_\+seq} & Stores the time stamps of the distances in the humanh\+\_\+mc\+\_\+dist\+\_\+seq array \\
+\hline
+{\em human\+\_\+continue\+\_\+goal} & True, if a human was still detected while continuing the navigation \\
+\hline
+\end{DoxyParams}
+\index{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger}!st\+\_\+log\+\_\+init@{st\+\_\+log\+\_\+init}}
+\index{st\+\_\+log\+\_\+init@{st\+\_\+log\+\_\+init}!lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger}}
+\subsubsection[{\texorpdfstring{st\+\_\+log\+\_\+init(int wait\+\_\+duration, std\+::vector$<$ double $>$ human\+\_\+dist\+\_\+seq, std\+::vector$<$ double $>$ human\+\_\+dist\+\_\+time\+\_\+seq, double human\+\_\+approach\+\_\+vel, double robot\+\_\+vel, std\+::string frame\+\_\+id)}{st_log_init(int wait_duration, std::vector< double > human_dist_seq, std::vector< double > human_dist_time_seq, double human_approach_vel, double robot_vel, std::string frame_id)}}]{\setlength{\rightskip}{0pt plus 5cm}void lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger\+::st\+\_\+log\+\_\+init (
+\begin{DoxyParamCaption}
+\item[{int}]{wait\+\_\+duration, }
+\item[{std\+::vector$<$ double $>$}]{human\+\_\+dist\+\_\+seq, }
+\item[{std\+::vector$<$ double $>$}]{human\+\_\+dist\+\_\+time\+\_\+seq, }
+\item[{double}]{human\+\_\+approach\+\_\+vel, }
+\item[{double}]{robot\+\_\+vel, }
+\item[{std\+::string}]{frame\+\_\+id}
+\end{DoxyParamCaption}
+)}\hypertarget{classlfe__navigation_1_1LfeNavLogger_a39d9b5ec6adc8b0e9f2a4231e6bc42d7}{}\label{classlfe__navigation_1_1LfeNavLogger_a39d9b5ec6adc8b0e9f2a4231e6bc42d7}
+
+
+Overloaded method to initialize a stop motion cue log message in a frontal path-\/crossing situation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em wait\+\_\+duration} & Configured duration to wait before navigation is continued \\
+\hline
+{\em human\+\_\+dist\+\_\+seq} & Stores the distances of the approaching human \\
+\hline
+{\em human\+\_\+dist\+\_\+time\+\_\+seq} & Stores the timestamp of the distances in human\+\_\+dist\+\_\+seq \\
+\hline
+{\em human\+\_\+approach\+\_\+vel} & Stores the approaching velocity of the human \\
+\hline
+{\em robot\+\_\+vel} & Current robot velocity \\
+\hline
+{\em frame\+\_\+id} & Frame id of the image, from which the back-\/off was triggered \\
+\hline
+\end{DoxyParams}
+\index{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger}!st\+\_\+log\+\_\+init@{st\+\_\+log\+\_\+init}}
+\index{st\+\_\+log\+\_\+init@{st\+\_\+log\+\_\+init}!lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger}}
+\subsubsection[{\texorpdfstring{st\+\_\+log\+\_\+init(int wait\+\_\+duration, double robot\+\_\+vel, std\+::string frame\+\_\+id)}{st_log_init(int wait_duration, double robot_vel, std::string frame_id)}}]{\setlength{\rightskip}{0pt plus 5cm}void lfe\+\_\+navigation\+::\+Lfe\+Nav\+Logger\+::st\+\_\+log\+\_\+init (
+\begin{DoxyParamCaption}
+\item[{int}]{wait\+\_\+duration, }
+\item[{double}]{robot\+\_\+vel, }
+\item[{std\+::string}]{frame\+\_\+id}
+\end{DoxyParamCaption}
+)}\hypertarget{classlfe__navigation_1_1LfeNavLogger_aa33f5443f3ef9967303434786bdad551}{}\label{classlfe__navigation_1_1LfeNavLogger_aa33f5443f3ef9967303434786bdad551}
+
+
+Overloaded method to initialize a stop motion cue log message in a lateral path-\/crossing situation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em wait\+\_\+duration} & Configured duration to wait before navigation is continued \\
+\hline
+{\em robot\+\_\+vel} & Current robot velocity \\
+\hline
+{\em frame\+\_\+id} & Frame id of the image, from which the back-\/off was triggered \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+lfe\+\_\+nav\+\_\+logger.\+h\end{DoxyCompactItemize}

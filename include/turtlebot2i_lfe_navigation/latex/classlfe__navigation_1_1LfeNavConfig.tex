@@ -1,0 +1,115 @@
+\hypertarget{classlfe__navigation_1_1LfeNavConfig}{}\section{lfe\+\_\+navigation\+:\+:Lfe\+Nav\+Config Class Reference}
+\label{classlfe__navigation_1_1LfeNavConfig}\index{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config}}
+
+
+The \hyperlink{classlfe__navigation_1_1LfeNavConfig}{Lfe\+Nav\+Config} class is used as a data type for dynamic configurations.  
+
+
+
+
+{\ttfamily \#include $<$lfe\+\_\+nav\+\_\+config.\+h$>$}
+
+
+
+Collaboration diagram for lfe\+\_\+navigation\+:\+:Lfe\+Nav\+Config\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classlfe__navigation_1_1LfeNavConfig__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structlfe__navigation_1_1LfeNavConfig_1_1BackOff}{Back\+Off}
+\item 
+struct \hyperlink{structlfe__navigation_1_1LfeNavConfig_1_1HumanRobotInteraction}{Human\+Robot\+Interaction}
+\item 
+struct \hyperlink{structlfe__navigation_1_1LfeNavConfig_1_1Navigation}{Navigation}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classlfe__navigation_1_1LfeNavConfig_af9b952c60d7d4ae10d84ac2f909edcdb}{Lfe\+Nav\+Config} ()
+\begin{DoxyCompactList}\small\item\em Construct the \hyperlink{classlfe__navigation_1_1LfeNavConfig}{Lfe\+Nav\+Config} using default values. \end{DoxyCompactList}\item 
+void \hyperlink{classlfe__navigation_1_1LfeNavConfig_a05137fe69a2433269ad8912d66d1451a}{load\+Ros\+Param\+From\+Node\+Handle} (const ros\+::\+Node\+Handle \&nh)
+\begin{DoxyCompactList}\small\item\em Load parameters from the configuration user interface via nodehandle. \end{DoxyCompactList}\item 
+void \hyperlink{classlfe__navigation_1_1LfeNavConfig_ac864482619cd6e9b864f0d7313c2ef70}{reconfigure} (turtlebot2i\+\_\+lfe\+\_\+navigation\+::\+Lfe\+Nav\+Reconfigure\+Config \&cfg)
+\begin{DoxyCompactList}\small\item\em Reconfigure parameters from the dynamic\+\_\+reconfigure config. Change parameters dynamically (e.\+g. with {\ttfamily rosrun rqt\+\_\+reconfigure rqt\+\_\+reconfigure}). A reconfigure server needs to be instantiated that calls this method in it\textquotesingle{}s callback. In case of the package {\itshape lfe\+\_\+navigation} default values are defined in {\itshape P\+R\+O\+J\+E\+C\+T\+\_\+\+S\+R\+C/cfg/\+Lfe\+Nav\+Reconfigure.\+cfg}. \end{DoxyCompactList}\item 
+boost\+::mutex \& \hyperlink{classlfe__navigation_1_1LfeNavConfig_a73965acf1db0ac8392f1afff462ff283}{config\+Mutex} ()\hypertarget{classlfe__navigation_1_1LfeNavConfig_a73965acf1db0ac8392f1afff462ff283}{}\label{classlfe__navigation_1_1LfeNavConfig_a73965acf1db0ac8392f1afff462ff283}
+
+\begin{DoxyCompactList}\small\item\em Return the internal config mutex. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structlfe__navigation_1_1LfeNavConfig_1_1Navigation}{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config\+::\+Navigation} \hyperlink{classlfe__navigation_1_1LfeNavConfig_adaabd1b3bbbb979a70ba2d7e206982a5}{navigation}\hypertarget{classlfe__navigation_1_1LfeNavConfig_adaabd1b3bbbb979a70ba2d7e206982a5}{}\label{classlfe__navigation_1_1LfeNavConfig_adaabd1b3bbbb979a70ba2d7e206982a5}
+
+\begin{DoxyCompactList}\small\item\em \hyperlink{structlfe__navigation_1_1LfeNavConfig_1_1Navigation}{Navigation} related parameters. \end{DoxyCompactList}\item 
+struct \hyperlink{structlfe__navigation_1_1LfeNavConfig_1_1HumanRobotInteraction}{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config\+::\+Human\+Robot\+Interaction} \hyperlink{classlfe__navigation_1_1LfeNavConfig_ac58acb47be5599e0b05510d6b06d2e46}{hri}\hypertarget{classlfe__navigation_1_1LfeNavConfig_ac58acb47be5599e0b05510d6b06d2e46}{}\label{classlfe__navigation_1_1LfeNavConfig_ac58acb47be5599e0b05510d6b06d2e46}
+
+\begin{DoxyCompactList}\small\item\em H\+RI related parameters. \end{DoxyCompactList}\item 
+struct \hyperlink{structlfe__navigation_1_1LfeNavConfig_1_1BackOff}{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config\+::\+Back\+Off} \hyperlink{classlfe__navigation_1_1LfeNavConfig_ae11dfc006a6406617cbd9189568c0839}{back\+Off}\hypertarget{classlfe__navigation_1_1LfeNavConfig_ae11dfc006a6406617cbd9189568c0839}{}\label{classlfe__navigation_1_1LfeNavConfig_ae11dfc006a6406617cbd9189568c0839}
+
+\begin{DoxyCompactList}\small\item\em \hyperlink{structlfe__navigation_1_1LfeNavConfig_1_1BackOff}{Back\+Off} related parameters. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classlfe__navigation_1_1LfeNavConfig}{Lfe\+Nav\+Config} class is used as a data type for dynamic configurations. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config}!Lfe\+Nav\+Config@{Lfe\+Nav\+Config}}
+\index{Lfe\+Nav\+Config@{Lfe\+Nav\+Config}!lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config}}
+\subsubsection[{\texorpdfstring{Lfe\+Nav\+Config()}{LfeNavConfig()}}]{\setlength{\rightskip}{0pt plus 5cm}lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config\+::\+Lfe\+Nav\+Config (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classlfe__navigation_1_1LfeNavConfig_af9b952c60d7d4ae10d84ac2f909edcdb}{}\label{classlfe__navigation_1_1LfeNavConfig_af9b952c60d7d4ae10d84ac2f909edcdb}
+
+
+Construct the \hyperlink{classlfe__navigation_1_1LfeNavConfig}{Lfe\+Nav\+Config} using default values. 
+
+\begin{DoxyWarning}{Warning}
+If the {\bfseries rosparam} server or/and {\bfseries dynamic\+\_\+reconfigure} (rqt\+\_\+reconfigure) node are used, the default variables will be overwritten\+: ~\newline
+
+\end{DoxyWarning}
+
+
+\subsection{Member Function Documentation}
+\index{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config}!load\+Ros\+Param\+From\+Node\+Handle@{load\+Ros\+Param\+From\+Node\+Handle}}
+\index{load\+Ros\+Param\+From\+Node\+Handle@{load\+Ros\+Param\+From\+Node\+Handle}!lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config}}
+\subsubsection[{\texorpdfstring{load\+Ros\+Param\+From\+Node\+Handle(const ros\+::\+Node\+Handle \&nh)}{loadRosParamFromNodeHandle(const ros::NodeHandle &nh)}}]{\setlength{\rightskip}{0pt plus 5cm}void lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config\+::load\+Ros\+Param\+From\+Node\+Handle (
+\begin{DoxyParamCaption}
+\item[{const ros\+::\+Node\+Handle \&}]{nh}
+\end{DoxyParamCaption}
+)}\hypertarget{classlfe__navigation_1_1LfeNavConfig_a05137fe69a2433269ad8912d66d1451a}{}\label{classlfe__navigation_1_1LfeNavConfig_a05137fe69a2433269ad8912d66d1451a}
+
+
+Load parameters from the configuration user interface via nodehandle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em nh} & const reference to the local ros\+::\+Node\+Handle \\
+\hline
+\end{DoxyParams}
+\index{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config}!reconfigure@{reconfigure}}
+\index{reconfigure@{reconfigure}!lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config@{lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config}}
+\subsubsection[{\texorpdfstring{reconfigure(turtlebot2i\+\_\+lfe\+\_\+navigation\+::\+Lfe\+Nav\+Reconfigure\+Config \&cfg)}{reconfigure(turtlebot2i_lfe_navigation::LfeNavReconfigureConfig &cfg)}}]{\setlength{\rightskip}{0pt plus 5cm}void lfe\+\_\+navigation\+::\+Lfe\+Nav\+Config\+::reconfigure (
+\begin{DoxyParamCaption}
+\item[{turtlebot2i\+\_\+lfe\+\_\+navigation\+::\+Lfe\+Nav\+Reconfigure\+Config \&}]{cfg}
+\end{DoxyParamCaption}
+)}\hypertarget{classlfe__navigation_1_1LfeNavConfig_ac864482619cd6e9b864f0d7313c2ef70}{}\label{classlfe__navigation_1_1LfeNavConfig_ac864482619cd6e9b864f0d7313c2ef70}
+
+
+Reconfigure parameters from the dynamic\+\_\+reconfigure config. Change parameters dynamically (e.\+g. with {\ttfamily rosrun rqt\+\_\+reconfigure rqt\+\_\+reconfigure}). A reconfigure server needs to be instantiated that calls this method in it\textquotesingle{}s callback. In case of the package {\itshape lfe\+\_\+navigation} default values are defined in {\itshape P\+R\+O\+J\+E\+C\+T\+\_\+\+S\+R\+C/cfg/\+Lfe\+Nav\+Reconfigure.\+cfg}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cfg} & Config class autogenerated by dynamic\+\_\+reconfigure according to the cfg-\/file mentioned above. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+lfe\+\_\+nav\+\_\+config.\+h\end{DoxyCompactItemize}

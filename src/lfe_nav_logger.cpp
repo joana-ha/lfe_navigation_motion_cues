@@ -29,6 +29,8 @@ namespace lfe_navigation{
 
         bo_log_msg_.wait_seconds = (float) wait_duration;
 
+        std::cout << "vel3 " << human_approach_vel << std::endl;
+
         try{
             listener_.lookupTransform("map", "base_link", ros::Time(0), tf_);
             bo_log_msg_.robot_coord.x = tf_.getOrigin().x();
@@ -188,7 +190,15 @@ namespace lfe_navigation{
                 }
             }
 
+
             pub_bo_log_.publish(bo_log_msg_);
+
+            bo_log_msg_.human_mc_dist_seq = {0};
+            bo_log_msg_.human_mc_dist_time_seq = {0};
+            bo_log_msg_.human_approach_dist_seq = {0};
+            bo_log_msg_.human_approach_dist_time_seq = {0};
+
+            std::cout << "final vel" << bo_log_msg_.human_approach_vel << std::endl;
         }else{
             st_log_msg_.time4interaction = total_duration_end_.toSec() - total_duration_start_.toSec();
             st_log_msg_.human_continue = human_continue_goal;
@@ -201,6 +211,12 @@ namespace lfe_navigation{
             }
 
             pub_st_log_.publish(st_log_msg_);
+
+            st_log_msg_.human_mc_dist_seq = {0};
+            st_log_msg_.human_mc_dist_time_seq = {0};
+            st_log_msg_.human_approach_dist_seq = {0};
+            st_log_msg_.human_approach_dist_time_seq = {0};
+
         }
     }
 
