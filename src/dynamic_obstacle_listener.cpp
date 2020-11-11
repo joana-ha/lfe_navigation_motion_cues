@@ -25,8 +25,8 @@ namespace lfe_navigation {
         }
         ROS_DEBUG("Dynamic reconfigure configuration received.");
 
-        std::cout << "Dynamic Reconfigure Server is up. Please make configurations by typing " << std::endl
-             << "rosrun rqt_reconfigure rqt_reconfigure" << std::endl << "and press ENTER when you are ready." << std::endl;
+        std::cout << "Dynamic Reconfigure Server is up. Please make configurations by typing the following command in a new terminal window:" << std::endl
+             << "rosrun rqt_reconfigure rqt_reconfigure" << std::endl << std::endl << "and press ENTER when you are ready." << std::endl;
         std::cin.get();
         std::cout << "Please remove all cables from the robot and press ENTER to start robot navigation." << std::endl;
         std::cin.get();
